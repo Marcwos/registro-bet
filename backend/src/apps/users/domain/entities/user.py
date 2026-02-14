@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from ..value_objects.user_id import UserId
+from ..value_objects.email import Email
+from ..value_objects.role import Role
+
 @dataclass
 class User:
     id: UserId
@@ -9,3 +13,4 @@ class User:
     role: Role
     is_email_verified: bool
     created_at: datetime
+    updated_at: datetime

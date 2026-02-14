@@ -5,9 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "bcrypt>=5.0.0",
     "django>=6.0.2",
     "django-cors-headers>=4.9.0",
     "djangorestframework>=3.16.1",
+    "drf-spectacular>=0.29.0",
     "psycopg2-binary>=2.9.11",
     "python-decouple>=3.8",
 ]
