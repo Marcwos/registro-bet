@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Local Apps (Features)
-    'users',
-    'bets',
+    'src.apps.users',
+    'src.apps.bets',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'src.config.urls'
 
 TEMPLATES = [
     {
@@ -77,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'src.config.wsgi.application'
 
 
 # Database

@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class BetsConfig(AppConfig):
-    name = 'bets'
+    name = 'src.apps.bets'
