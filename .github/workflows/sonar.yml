@@ -1,0 +1,40 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clonar el repositorio
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # SonarCloud necesita el historial completo
+
+      # 2. Instalar Python
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # 3. Instalar uv (tu gestor de paquetes)
+      - uses: astral-sh/setup-uv@v4
+
+      # 4. Instalar dependencias
+      - name: Install dependencies
+        working-directory: backend
+        run: uv sync
+
+      # 5. Ejecutar tests + generar coverage.xml
+      - name: Run tests with coverage
+        working-directory: backend
+        run: uv run pytest src/apps/users/tests/ --cov --cov-report=xml:coverage.xml
+
+      # 6. Ejecutar SonarCloud Scanner
+      - uses: SonarSource/sonarqube-cloud-github-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
