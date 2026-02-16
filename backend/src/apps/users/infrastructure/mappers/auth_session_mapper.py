@@ -16,6 +16,7 @@ class AuthSessionMapper:
             ip_address=model.ip_address,
         )
     
+    @staticmethod
     def to_model(entity: AuthSession) -> AuthSessionModel:
         return AuthSessionModel(
             id=entity.id,
