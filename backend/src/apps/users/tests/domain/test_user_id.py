@@ -7,7 +7,7 @@ UserId envuelve un UUID. Testeamos:
   - Comparación entre instancias
 """
 
-from uuid import uuid4, UUID
+from uuid import uuid4
 
 import pytest
 
@@ -15,7 +15,6 @@ from ...domain.value_objects.user_id import UserId
 
 
 class TestUserId:
-
     def test_create_with_valid_uuid(self):
         """Se puede crear un UserId con un UUID válido."""
         uid = uuid4()

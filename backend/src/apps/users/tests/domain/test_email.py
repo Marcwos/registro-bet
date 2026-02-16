@@ -19,7 +19,6 @@ from ...domain.value_objects.email import Email
 
 
 class TestEmail:
-
     # ─── HAPPY PATH ────────────────────────────────────────────
 
     def test_create_valid_email(self):

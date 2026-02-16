@@ -4,22 +4,21 @@ Tests de dominio — Entidad: AuthSession
 Testeamos la estructura del dataclass AuthSession.
 """
 
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 from ...domain.entities.auth_session import AuthSession
 
 
 class TestAuthSession:
-
     def test_create_active_session(self):
         """Una sesión activa tiene revoked_at=None."""
         session = AuthSession(
             id=uuid4(),
             user_id=uuid4(),
             refresh_token_hash="some_hash_value",
-            expires_at=datetime.now(timezone.utc) + timedelta(days=7),
-            created_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(UTC) + timedelta(days=7),
+            created_at=datetime.now(UTC),
             revoked_at=None,
             user_agent="Mozilla/5.0",
             ip_address="192.168.1.1",
@@ -30,7 +29,7 @@ class TestAuthSession:
 
     def test_create_revoked_session(self):
         """Una sesión revocada tiene revoked_at con fecha."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         session = AuthSession(
             id=uuid4(),
             user_id=uuid4(),
@@ -51,8 +50,8 @@ class TestAuthSession:
             id=uuid4(),
             user_id=uuid4(),
             refresh_token_hash="hash",
-            expires_at=datetime.now(timezone.utc) + timedelta(days=7),
-            created_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(UTC) + timedelta(days=7),
+            created_at=datetime.now(UTC),
             revoked_at=None,
             user_agent="Chrome/120.0",
             ip_address="10.0.0.1",

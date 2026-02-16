@@ -17,6 +17,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pre-commit>=4.2.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "pytest-django>=4.11.1",
@@ -41,3 +42,45 @@ omit = [
 show_missing = true
 # Fallar si la cobertura baja de este % (opcional, útil en CI)
 # fail_under = 80
+
+# ─── Configuración de Ruff (linter + formatter) ───────────
+[tool.ruff]
+# Versión de Python objetivo
+target-version = "py313"
+# Longitud máxima de línea
+line-length = 120
+# Qué carpetas analizar
+src = ["src"]
+# Qué carpetas/archivos ignorar
+exclude = [
+    "migrations",
+    "__pycache__",
+    ".venv",
+]
+
+[tool.ruff.lint]
+# Reglas activadas:
+#   E/W  = pycodestyle (errores de estilo)
+#   F    = pyflakes (errores lógicos, imports sin usar)
+#   I    = isort (orden de imports)
+#   N    = pep8-naming (convenciones de nombres)
+#   UP   = pyupgrade (modernizar sintaxis a Python 3.13)
+#   B    = flake8-bugbear (errores comunes y antipatrones)
+#   SIM  = flake8-simplify (simplificar código)
+#   RUF  = reglas propias de Ruff
+select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+# Reglas ignoradas:
+#   E501   = línea muy larga (ya lo controla line-length)
+#   RUF012 = ClassVar en atributos mutables (conflicto con Django/DRF views)
+#   N818   = Suffix "Error" en excepciones (usamos "Exception" por convención DDD)
+ignore = ["E501", "RUF012", "N818"]
+
+[tool.ruff.lint.isort]
+# Reconocer "src" como paquete propio para ordenar imports
+known-first-party = ["src"]
+
+[tool.ruff.format]
+# Usar comillas dobles (estándar en Python)
+quote-style = "double"
+# Usar 4 espacios de indentación
+indent-style = "space"

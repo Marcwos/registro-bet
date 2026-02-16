@@ -13,7 +13,6 @@ from ...domain.value_objects.role import Role
 
 
 class TestRole:
-
     def test_user_role_exists(self):
         """El rol USER tiene valor 'user'."""
         assert Role.USER.value == "user"

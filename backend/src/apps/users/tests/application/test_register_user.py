@@ -22,15 +22,14 @@ Estructura de cada test: ARRANGE → ACT → ASSERT
 """
 
 from unittest.mock import Mock
-from uuid import uuid4
 
 import pytest
 
 from ...application.uses_cases.register_user import RegisterUser
 from ...domain.entities.user import User
+from ...domain.exceptions import UserAlreadyExistsException
 from ...domain.repositories.user_repository import UserRepository
 from ...domain.services.password_hasher import PasswordHasher
-from ...domain.exceptions import UserAlreadyExistsException
 
 
 class TestRegisterUser:

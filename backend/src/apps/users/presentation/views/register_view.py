@@ -1,20 +1,21 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from ...application.uses_cases.register_user import RegisterUser
+from ...domain.exceptions import UserAlreadyExistsException
 from ...infrastructure.repositories.django_user_repository import DjangoUserRepository
 from ...infrastructure.services.bcrypt_password_hasher import BcryptPasswordHasher
-from ...domain.exceptions import UserAlreadyExistsException
-from ..serializers.register_serializer import (RegisterRequestSerializer, RegisterResponseSerializer)
+from ..serializers.register_serializer import RegisterRequestSerializer, RegisterResponseSerializer
+
 
 class RegisterView(APIView):
     authentication_classes = []
     permission_classes = []
 
     """ Endpoint para registrar un nuevo usuario
-    
+
     Flujo:
     1. El serializers valida email y password
     2. Se inyectan las dependencias (repository + hasher)
@@ -42,7 +43,7 @@ class RegisterView(APIView):
         repository = DjangoUserRepository()
         hasher = BcryptPasswordHasher()
 
-        try: 
+        try:
             # 3. Ejecutar use case
             use_case = RegisterUser(repository, hasher)
             user = use_case.execute(
@@ -53,14 +54,14 @@ class RegisterView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_409_CONFLICT)
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         # 4. Formatear respuesta
         response_data = {
             "id": user.id.value,
             "email": user.email.value,
             "role": user.role.value,
             "is_email_verified": user.is_email_verified,
-            "created_at": user.created_at
+            "created_at": user.created_at,
         }
         response_serializer = RegisterResponseSerializer(response_data)
 

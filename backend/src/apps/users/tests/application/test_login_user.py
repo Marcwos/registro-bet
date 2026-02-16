@@ -11,26 +11,25 @@ Como LoginUser tiene 4 dependencias (user_repo, session_repo, hasher, token_prov
 creamos 4 mocks. Cada mock simula una dependencia.
 """
 
-from unittest.mock import Mock, patch
+from datetime import UTC, datetime
+from unittest.mock import Mock
 from uuid import uuid4
-from datetime import datetime, timezone
 
 import pytest
 
-from ...application.uses_cases.login_user import LoginUser, LoginResult
+from ...application.uses_cases.login_user import LoginResult, LoginUser
 from ...domain.entities.user import User
-from ...domain.value_objects.email import Email
-from ...domain.value_objects.user_id import UserId
-from ...domain.value_objects.role import Role
-from ...domain.repositories.user_repository import UserRepository
+from ...domain.exceptions import InvalidCredentialsException
 from ...domain.repositories.auth_session_repository import AuthSessionRepository
+from ...domain.repositories.user_repository import UserRepository
 from ...domain.services.password_hasher import PasswordHasher
 from ...domain.services.token_provider import TokenProvider
-from ...domain.exceptions import InvalidCredentialsException
+from ...domain.value_objects.email import Email
+from ...domain.value_objects.role import Role
+from ...domain.value_objects.user_id import UserId
 
 
 class TestLoginUser:
-
     def setup_method(self):
         """Crea mocks frescos para cada test."""
         self.user_repo = Mock(spec=UserRepository)
@@ -53,8 +52,8 @@ class TestLoginUser:
             password_hash="hashed_password",
             role=Role.USER,
             is_email_verified=False,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
     # ─── HAPPY PATH ────────────────────────────────────────────
@@ -98,7 +97,7 @@ class TestLoginUser:
     def test_login_fails_when_user_not_found(self):
         """
         Escenario: El email no está registrado.
-        Resultado: InvalidCredentialsException (no decimos "email no existe" 
+        Resultado: InvalidCredentialsException (no decimos "email no existe"
         por seguridad — siempre "credenciales inválidas").
         """
         # ARRANGE

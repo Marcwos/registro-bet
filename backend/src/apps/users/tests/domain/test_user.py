@@ -7,22 +7,21 @@ La entidad User es un dataclass. Testeamos:
   - Que tiene la estructura esperada
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from ...domain.entities.user import User
 from ...domain.value_objects.email import Email
-from ...domain.value_objects.user_id import UserId
 from ...domain.value_objects.role import Role
+from ...domain.value_objects.user_id import UserId
 
 
 class TestUser:
-
     def setup_method(self):
         """Datos base para crear un User válido."""
         self.user_id = UserId(uuid4())
         self.email = Email("test@example.com")
-        self.now = datetime.now(timezone.utc)
+        self.now = datetime.now(UTC)
 
     def test_create_user_with_valid_data(self):
         """Un User se crea correctamente con todos los campos requeridos."""

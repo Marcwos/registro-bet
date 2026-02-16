@@ -1,0 +1,33 @@
+# ─── Pre-commit hooks ──────────────────────────────────────
+# Se ejecutan automáticamente antes de cada "git commit".
+# Si algún check falla, el commit se bloquea hasta que
+# corrijas el problema → solo código limpio llega al repo.
+#
+# Comandos útiles:
+#   pre-commit install          → activa los hooks en tu repo
+#   pre-commit run --all-files  → ejecuta todos los hooks manualmente
+#   pre-commit autoupdate       → actualiza versiones de los hooks
+
+repos:
+  # ─── Checks generales ─────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace        # Elimina espacios al final de líneas
+      - id: end-of-file-fixer          # Asegura newline al final del archivo
+      - id: check-yaml                 # Valida sintaxis YAML
+      - id: check-added-large-files    # Bloquea archivos > 500KB
+        args: ['--maxkb=500']
+      - id: check-merge-conflict       # Detecta marcadores de conflicto sin resolver
+
+  # ─── Ruff (linter + formatter para Python) ─────────────────
+  # Ruff reemplaza a flake8, isort, pycodestyle y Black
+  # en una sola herramienta ultrarrápida escrita en Rust.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.12
+    hooks:
+      # Linter: detecta errores, imports sin usar, malas prácticas
+      - id: ruff
+        args: ['--fix']               # Autocorrige lo que pueda
+      # Formatter: formatea el código (como Black, pero más rápido)
+      - id: ruff-format

@@ -1,11 +1,11 @@
 from ...domain.entities.user import User
-from ...domain.value_objects.user_id import UserId
 from ...domain.value_objects.email import Email
 from ...domain.value_objects.role import Role
+from ...domain.value_objects.user_id import UserId
 from ..models.user_model import UserModel
 
-class UserMapper:
 
+class UserMapper:
     @staticmethod
     def to_domain(model: UserModel) -> User:
         return User(
@@ -15,9 +15,9 @@ class UserMapper:
             role=Role(model.role),
             is_email_verified=model.is_email_verified,
             created_at=model.created_at,
-            updated_at=model.updated_at
+            updated_at=model.updated_at,
         )
-    
+
     @staticmethod
     def to_model(entity: User) -> UserModel:
         return UserModel(
@@ -27,5 +27,5 @@ class UserMapper:
             role=entity.role.value,
             is_email_verified=entity.is_email_verified,
             created_at=entity.created_at,
-            updated_at=entity.updated_at
+            updated_at=entity.updated_at,
         )

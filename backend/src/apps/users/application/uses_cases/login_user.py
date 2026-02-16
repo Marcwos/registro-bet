@@ -1,15 +1,15 @@
-from dataclasses import dataclass
-from datetime import datetime, timezone, timedelta
-from uuid import uuid4
 import hashlib
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
+from uuid import uuid4
 
 from ...domain.entities.auth_session import AuthSession
-from ...domain.value_objects.email import Email
-from ...domain.repositories.user_repository import UserRepository
+from ...domain.exceptions import InvalidCredentialsException
 from ...domain.repositories.auth_session_repository import AuthSessionRepository
+from ...domain.repositories.user_repository import UserRepository
 from ...domain.services.password_hasher import PasswordHasher
 from ...domain.services.token_provider import TokenProvider
-from ...domain.exceptions import InvalidCredentialsException
+from ...domain.value_objects.email import Email
 
 
 @dataclass
@@ -20,20 +20,21 @@ class LoginResult:
     email: str
     role: str
 
-class LoginUser:
 
+class LoginUser:
     def __init__(
-            self, user_repository: UserRepository,
-            session_repository: AuthSessionRepository,
-            password_hasher: PasswordHasher,
-            token_provider: TokenProvider
+        self,
+        user_repository: UserRepository,
+        session_repository: AuthSessionRepository,
+        password_hasher: PasswordHasher,
+        token_provider: TokenProvider,
     ):
         self.user_repository = user_repository
         self.session_repository = session_repository
         self.password_hasher = password_hasher
         self.token_provider = token_provider
 
-    def execute(self, email:str, password: str, user_agent: str = "", ip_address: str = "") -> LoginResult:
+    def execute(self, email: str, password: str, user_agent: str = "", ip_address: str = "") -> LoginResult:
         # 1. Buscar Usuario
         email_vo = Email(email)
         user = self.user_repository.get_by_email(email_vo)
@@ -53,8 +54,8 @@ class LoginUser:
             id=session_id,
             user_id=user.id.value,
             refresh_token_hash=hashlib.sha256(refresh_token.encode()).hexdigest(),
-            expires_at=datetime.now(timezone.utc) + timedelta(days=7),
-            created_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(UTC) + timedelta(days=7),
+            created_at=datetime.now(UTC),
             revoked_at=None,
             user_agent=user_agent,
             ip_address=ip_address,

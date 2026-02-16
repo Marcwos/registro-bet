@@ -1,8 +1,9 @@
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from ..services.jwt_token_provider import JwtTokenProvider
 from ...domain.exceptions import ExpiredTokenException, InvalidTokenException
+from ..services.jwt_token_provider import JwtTokenProvider
+
 
 class JwtUser:
     """Objeto minimo que drf espera como request.user"""
@@ -12,21 +13,21 @@ class JwtUser:
         self.role = role
         self.is_athenticated = True
 
-class JwtAuthentication(BaseAuthentication):
 
+class JwtAuthentication(BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.META.get("HTTP_AUTHORIZATION", "")
 
         if not auth_header.startswith("Bearer "):
-            return None # Si no hay token, dejar pasar (permission_class decidira)
-        
+            return None  # Si no hay token, dejar pasar (permission_class decidira)
+
         token = auth_header.split(" ")[1]
         token_provider = JwtTokenProvider()
 
-        try: 
+        try:
             payload = token_provider.decode_access_token(token)
         except (ExpiredTokenException, InvalidTokenException) as e:
-            raise AuthenticationFailed(str(e))
-        
+            raise AuthenticationFailed(str(e)) from e
+
         user = JwtUser(user_id=payload["sub"], role=payload["role"])
         return (user, token)

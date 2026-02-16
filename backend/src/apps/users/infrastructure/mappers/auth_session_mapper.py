@@ -1,8 +1,8 @@
 from ...domain.entities.auth_session import AuthSession
 from ..models.auth_session_model import AuthSessionModel
 
-class AuthSessionMapper:
 
+class AuthSessionMapper:
     @staticmethod
     def to_domain(model: AuthSessionModel) -> AuthSession:
         return AuthSession(
@@ -15,7 +15,7 @@ class AuthSessionMapper:
             user_agent=model.user_agent,
             ip_address=model.ip_address,
         )
-    
+
     @staticmethod
     def to_model(entity: AuthSession) -> AuthSessionModel:
         return AuthSessionModel(

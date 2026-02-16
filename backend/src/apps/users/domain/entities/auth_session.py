@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
+
 
 @dataclass
 class AuthSession:
@@ -10,6 +10,6 @@ class AuthSession:
     refresh_token_hash: str
     expires_at: datetime
     created_at: datetime
-    revoked_at: Optional[datetime]
+    revoked_at: datetime | None
     user_agent: str
     ip_address: str

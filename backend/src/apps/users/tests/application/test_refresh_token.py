@@ -14,31 +14,30 @@ RefreshToken es el caso de uso más complejo porque tiene más pasos:
 Cada paso que puede fallar = un test de error.
 """
 
+import hashlib
+from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock
 from uuid import uuid4
-from datetime import datetime, timezone, timedelta
-import hashlib
 
 import pytest
 
-from ...application.uses_cases.refresh_token import RefreshToken, RefreshResult
-from ...domain.entities.user import User
+from ...application.uses_cases.refresh_token import RefreshResult, RefreshToken
 from ...domain.entities.auth_session import AuthSession
-from ...domain.value_objects.email import Email
-from ...domain.value_objects.user_id import UserId
-from ...domain.value_objects.role import Role
-from ...domain.repositories.user_repository import UserRepository
-from ...domain.repositories.auth_session_repository import AuthSessionRepository
-from ...domain.services.token_provider import TokenProvider
+from ...domain.entities.user import User
 from ...domain.exceptions import (
     InvalidTokenException,
     SessionRevokedException,
     UserNotFoundException,
 )
+from ...domain.repositories.auth_session_repository import AuthSessionRepository
+from ...domain.repositories.user_repository import UserRepository
+from ...domain.services.token_provider import TokenProvider
+from ...domain.value_objects.email import Email
+from ...domain.value_objects.role import Role
+from ...domain.value_objects.user_id import UserId
 
 
 class TestRefreshToken:
-
     def setup_method(self):
         self.user_repo = Mock(spec=UserRepository)
         self.session_repo = Mock(spec=AuthSessionRepository)
@@ -62,16 +61,16 @@ class TestRefreshToken:
             password_hash="hashed",
             role=Role.USER,
             is_email_verified=False,
-            created_at=datetime.now(timezone.utc),
-            updated_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         self.test_session = AuthSession(
             id=self.test_session_id,
             user_id=self.test_user_id,
             refresh_token_hash=self.token_hash,
-            expires_at=datetime.now(timezone.utc) + timedelta(days=7),  # No expirada
-            created_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(UTC) + timedelta(days=7),  # No expirada
+            created_at=datetime.now(UTC),
             revoked_at=None,  # No revocada
             user_agent="Mozilla/5.0",
             ip_address="127.0.0.1",
@@ -84,9 +83,7 @@ class TestRefreshToken:
         Escenario: Refresh exitoso. Se rota el token y se crea nueva sesión.
         """
         # ARRANGE
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = self.test_session
         self.user_repo.get_by_id.return_value = self.test_user
         self.token_provider.generate_refresh_token.return_value = "new_refresh_token"
@@ -116,9 +113,7 @@ class TestRefreshToken:
 
     def test_refresh_fails_when_session_not_found(self):
         """El session_id del token no existe en BD."""
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = None
 
         with pytest.raises(InvalidTokenException):
@@ -130,16 +125,14 @@ class TestRefreshToken:
             id=self.test_session_id,
             user_id=self.test_user_id,
             refresh_token_hash=self.token_hash,
-            expires_at=datetime.now(timezone.utc) + timedelta(days=7),
-            created_at=datetime.now(timezone.utc),
-            revoked_at=datetime.now(timezone.utc),  # ← YA REVOCADA
+            expires_at=datetime.now(UTC) + timedelta(days=7),
+            created_at=datetime.now(UTC),
+            revoked_at=datetime.now(UTC),  # ← YA REVOCADA
             user_agent="Mozilla/5.0",
             ip_address="127.0.0.1",
         )
 
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = revoked_session
 
         with pytest.raises(SessionRevokedException):
@@ -154,16 +147,14 @@ class TestRefreshToken:
             id=self.test_session_id,
             user_id=self.test_user_id,
             refresh_token_hash="hash_diferente_al_del_token",  # ← No coincide
-            expires_at=datetime.now(timezone.utc) + timedelta(days=7),
-            created_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(UTC) + timedelta(days=7),
+            created_at=datetime.now(UTC),
             revoked_at=None,
             user_agent="Mozilla/5.0",
             ip_address="127.0.0.1",
         )
 
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = tampered_session
 
         with pytest.raises(InvalidTokenException):
@@ -175,16 +166,14 @@ class TestRefreshToken:
             id=self.test_session_id,
             user_id=self.test_user_id,
             refresh_token_hash=self.token_hash,
-            expires_at=datetime.now(timezone.utc) - timedelta(days=1),  # ← EXPIRADA
-            created_at=datetime.now(timezone.utc) - timedelta(days=8),
+            expires_at=datetime.now(UTC) - timedelta(days=1),  # ← EXPIRADA
+            created_at=datetime.now(UTC) - timedelta(days=8),
             revoked_at=None,
             user_agent="Mozilla/5.0",
             ip_address="127.0.0.1",
         )
 
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = expired_session
 
         with pytest.raises(UserNotFoundException):
@@ -192,9 +181,7 @@ class TestRefreshToken:
 
     def test_refresh_fails_when_user_not_found(self):
         """El usuario de la sesión ya no existe."""
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = self.test_session
         self.user_repo.get_by_id.return_value = None  # ← usuario eliminado
 

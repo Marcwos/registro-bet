@@ -9,21 +9,20 @@ LogoutUser tiene una lógica simple:
 Probamos: logout exitoso, token inválido, sesión no encontrada.
 """
 
+from datetime import UTC, datetime
 from unittest.mock import Mock
 from uuid import uuid4
-from datetime import datetime, timezone
 
 import pytest
 
 from ...application.uses_cases.logout_user import LogoutUser
 from ...domain.entities.auth_session import AuthSession
+from ...domain.exceptions import InvalidTokenException
 from ...domain.repositories.auth_session_repository import AuthSessionRepository
 from ...domain.services.token_provider import TokenProvider
-from ...domain.exceptions import InvalidTokenException
 
 
 class TestLogoutUser:
-
     def setup_method(self):
         self.session_repo = Mock(spec=AuthSessionRepository)
         self.token_provider = Mock(spec=TokenProvider)
@@ -38,8 +37,8 @@ class TestLogoutUser:
             id=self.test_session_id,
             user_id=uuid4(),
             refresh_token_hash="some_hash",
-            expires_at=datetime.now(timezone.utc),
-            created_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(UTC),
+            created_at=datetime.now(UTC),
             revoked_at=None,
             user_agent="Mozilla/5.0",
             ip_address="127.0.0.1",
@@ -53,9 +52,7 @@ class TestLogoutUser:
         """
         # ARRANGE
         # decode_refresh_token devuelve el payload con el session_id
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = self.test_session
 
         # ACT
@@ -95,9 +92,7 @@ class TestLogoutUser:
         Resultado: InvalidTokenException.
         """
         # ARRANGE
-        self.token_provider.decode_refresh_token.return_value = {
-            "session_id": str(self.test_session_id)
-        }
+        self.token_provider.decode_refresh_token.return_value = {"session_id": str(self.test_session_id)}
         self.session_repo.get_by_id.return_value = None  # ← no existe
 
         # ACT + ASSERT
