@@ -51,9 +51,14 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'src.apps.users.infrastructure.authentication.jwt_authentication.JwtAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Por defecto público, proteges por vista
+    ],
 }
-
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Registro Bet API',
     'DESCRIPTION': 'API para registro y gestion de apuestas',

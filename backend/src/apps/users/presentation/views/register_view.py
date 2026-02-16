@@ -10,6 +10,9 @@ from ...domain.exceptions import UserAlreadyExistsException
 from ..serializers.register_serializer import (RegisterRequestSerializer, RegisterResponseSerializer)
 
 class RegisterView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
     """ Endpoint para registrar un nuevo usuario
     
     Flujo:
@@ -28,7 +31,7 @@ class RegisterView(APIView):
             400: {"description": "Datos invalidos"},
             409: {"description": "El email ya esta registrado"},
         },
-        tags=["Users"],
+        tags=["users"],
     )
     def post(self, request):
         # 1. Validar datos de entrada

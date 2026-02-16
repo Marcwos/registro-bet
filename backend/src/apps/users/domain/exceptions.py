@@ -12,3 +12,15 @@ class InvalidCredentialsException(DomainException):
 class UserNotFoundException(DomainException):
     def __init__(self):
         super().__init__("Usuario no encontrado")
+
+class ExpiredTokenException(DomainException):
+    def __init__(self):
+        super().__init__("El token ha expirado")
+
+class InvalidTokenException(DomainException):
+    def __init__(self):
+        super().__init__("El token es invalido")
+
+class SessionRevokedException(DomainException):
+    def __init__(self):
+        super().__init__("La sesion ha sido revocada")
