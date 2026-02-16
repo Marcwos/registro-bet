@@ -18,6 +18,26 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
     "pytest-django>=4.11.1",
     "ruff>=0.15.0",
 ]
+
+# ─── Configuración de cobertura (pytest-cov) ──────────────
+[tool.coverage.run]
+# Qué código medir (solo tu código, no librerías)
+source = ["src"]
+# Ignorar archivos que no son lógica de negocio
+omit = [
+    "*/migrations/*",
+    "*/config/*",
+    "*/manage.py",
+    "*/__init__.py",
+    "*/tests/*",
+]
+
+[tool.coverage.report]
+# Mostrar líneas no cubiertas en el reporte de terminal
+show_missing = true
+# Fallar si la cobertura baja de este % (opcional, útil en CI)
+# fail_under = 80

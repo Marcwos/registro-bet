@@ -29,6 +29,12 @@ Desktop.ini
 staticfiles/
 mediafiles/
 
+# Cobertura / SonarCloud
+coverage.xml
+htmlcov/
+.coverage
+.coverage.*
+
 # md
 sprints.md
 # uv
