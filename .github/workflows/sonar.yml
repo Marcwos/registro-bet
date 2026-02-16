@@ -35,6 +35,6 @@ jobs:
         run: uv run pytest src/apps/users/tests/ --cov --cov-report=xml:coverage.xml
 
       # 6. Ejecutar SonarCloud Scanner
-      - uses: SonarSource/sonarqube-cloud-github-action@ea8c46390ccbd21e0d45e668280048aebdfbfbae # v4.0.0
+      - uses: sonarSource/sonarqube-cloud-github-action@ea8c46390ccbd21e0d45e668280048aebdfbfbae # v4.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
