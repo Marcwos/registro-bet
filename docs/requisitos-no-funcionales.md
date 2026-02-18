@@ -11,6 +11,11 @@
 - Datos completamente privados por usuario
 - Protección contra accesos no autorizados
 - El administrador **no** tiene acceso a datos sensibles ni apuestas individuales
+- Solo usuarios con **correo verificado** pueden iniciar sesión
+- Código de recuperación de contraseña con **expiración** y **un solo uso**
+- Límite de intentos para códigos de verificación/recuperación
+- Solicitar recuperación **no revela** si el correo existe en el sistema
+- Cambiar contraseña **invalida todas las sesiones activas**
 
 ---
 

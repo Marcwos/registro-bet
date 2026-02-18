@@ -7,10 +7,11 @@
 ## 🔐 Autenticación
 
 - Crear cuenta
-- Verificar correo electrónico
-- Iniciar sesión
+- Verificar correo electrónico (enlace único → marca `is_email_verified`)
+- Iniciar sesión (**solo si el correo está verificado**)
 - Cerrar sesión
-- Recuperar contraseña vía correo con código
+- Recuperar contraseña vía correo con código (expira en 10 min, un solo uso)
+- Cambiar contraseña (invalida todas las sesiones activas)
 
 ---
 

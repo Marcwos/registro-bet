@@ -71,6 +71,28 @@
 
 ---
 
+## ✉️ Verificación de Email
+
+23. Al registrarse, el sistema envía un **correo con enlace único** de verificación.
+24. Solo usuarios con **correo verificado** pueden iniciar sesión.
+    > Si el usuario no verifica su correo, no puede hacer login.
+25. El enlace de verificación marca `is_email_verified = true`.
+26. Si el correo ya está verificado, no se puede volver a verificar.
+
+---
+
+## 🔑 Recuperación de Contraseña
+
+27. El código de recuperación expira en **10 minutos**.
+28. El código de recuperación es de **un solo uso**.
+29. Solo el **último código generado** es válido (los anteriores se invalidan).
+30. Existe un **límite de intentos** para introducir el código.
+31. Solicitar recuperación **no revela si el correo existe** en el sistema.
+    > Siempre se responde "si el email está registrado, recibirás un código" — por seguridad.
+32. Al cambiar la contraseña (ya sea por recuperación o cambio manual), se **invalidan todas las sesiones activas** (regla 22).
+
+---
+
 ## 📊 Admin y Auditoría
 
 **Admin puede ver:**
