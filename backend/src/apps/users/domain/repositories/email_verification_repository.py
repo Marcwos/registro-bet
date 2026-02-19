@@ -10,7 +10,7 @@ class EmailVerficationRepository(ABC):
         """Guarda un nuevo codigo de un usuario"""
 
     @abstractmethod
-    def get_latest_by_user(self, user_id: UUID) -> EmailVerification:
+    def get_latest_by_user(self, user_id: UUID) -> EmailVerification | None:
         """Obtiene el codigo mas reciente de un usuario"""
 
     @abstractmethod

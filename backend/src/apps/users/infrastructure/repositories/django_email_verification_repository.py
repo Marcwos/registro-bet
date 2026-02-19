@@ -14,7 +14,7 @@ class DjangoEmailVerificationRepository(EmailVerficationRepository):
         model = EmailVerificationMapper.to_model(verfication)
         model.save()
 
-    def get_latest_by_user(self, user_id: UUID) -> EmailVerification:
+    def get_latest_by_user(self, user_id: UUID) -> EmailVerification | None:
         try:
             model = EmailVerificationModel.objects.filter(user_id=user_id).latest("created_at")
             return EmailVerificationMapper.to_main(model)
