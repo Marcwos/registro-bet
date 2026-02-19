@@ -112,9 +112,16 @@
 
 ## 🎛️ UX que Impacta Dominio
 
-- Categorías de deporte existen desde **v1**.
-- Las categorías las crea **el admin**.
 - Tema claro/oscuro se guarda en **perfil del usuario**.
+
+### Modo Normal vs Modo Pro
+
+- **Modo normal (v1):** campos básicos (monto, cuota, ganancia, estado). Sin deporte ni tipo de apuesta.
+- **Modo pro (futuro):** agrega selección de deporte (`Sport`) y tipo de apuesta (`BetCategory`).
+- `Sport` = deporte (Fútbol, Tenis, MMA, etc.) — lo crea el admin.
+- `BetCategory` = tipo/formato de apuesta (Simple, Combinada de 2, Combinada de 3-5, etc.) — lo crea el admin.
+- Los campos `sport_id` y `category_id` en `BET` son **nullable** para soportar ambos modos.
+- Primero se implementa modo normal completo, luego se escala a modo pro.
 
 ---
 

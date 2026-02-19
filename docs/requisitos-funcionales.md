@@ -43,7 +43,7 @@ El usuario puede:
 
 ---
 
-## 🧾 Datos de la Apuesta (Modo Fácil)
+## 🧾 Datos de la Apuesta (Modo Normal)
 
 | Campo      | Detalle                                              |
 | ---------- | ---------------------------------------------------- |
@@ -53,6 +53,22 @@ El usuario puede:
 | Ganancia   | Campo único editable (ganancia real)                  |
 | Estado     | Pendiente / Ganada / Perdida / Nula                  |
 | Fecha      | Interna, no visible al usuario                       |
+
+---
+
+## 🚀 Datos de la Apuesta (Modo Pro — futuro)
+
+> Escalado previsto: cuando el modo normal funcione completo, se implementa modo pro.
+> Los campos adicionales son **opcionales** (nullable en BD).
+
+| Campo         | Detalle                                                  |
+| ------------- | -------------------------------------------------------- |
+| Deporte       | Selección de catálogo (`Sport`: Fútbol, Tenis, MMA...)   |
+| Tipo apuesta  | Selección de catálogo (`BetCategory`: Simple, Combinada) |
+| Descripción   | Texto libre opcional                                     |
+
+**Beneficio:** estadísticas enriquecidas por deporte y tipo de apuesta.
+Ejemplo: *"Tu mejor rendimiento es en apuestas simples de fútbol"*.
 
 ---
 
