@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from ...application.uses_cases.logout_user import LogoutUser
 from ...domain.exceptions import ExpiredTokenException, InvalidTokenException
-from ...infrastructure.repositories.django_auth_session_repository import DjandoAuthSessionRepository
+from ...infrastructure.repositories.django_auth_session_repository import DjangoAuthSessionRepository
 from ...infrastructure.services.jwt_token_provider import JwtTokenProvider
 from ..serializers.login_serializer import LogoutRequestSerializer
 
@@ -28,7 +28,7 @@ class LogoutView(APIView):
         serializer.is_valid(raise_exception=True)
 
         use_case = LogoutUser(
-            session_repository=DjandoAuthSessionRepository(),
+            session_repository=DjangoAuthSessionRepository(),
             token_provider=JwtTokenProvider(),
         )
 

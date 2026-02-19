@@ -19,7 +19,7 @@ import pytest
 
 from ...application.uses_cases.login_user import LoginResult, LoginUser
 from ...domain.entities.user import User
-from ...domain.exceptions import InvalidCredentialsException
+from ...domain.exceptions import EmailNotVerifiedException, InvalidCredentialsException
 from ...domain.repositories.auth_session_repository import AuthSessionRepository
 from ...domain.repositories.user_repository import UserRepository
 from ...domain.services.password_hasher import PasswordHasher
@@ -51,7 +51,7 @@ class TestLoginUser:
             email=Email("test@example.com"),
             password_hash="hashed_password",
             role=Role.USER,
-            is_email_verified=False,
+            is_email_verified=True,
             created_at=datetime.now(UTC),
             updated_at=datetime.now(UTC),
         )
@@ -126,3 +126,29 @@ class TestLoginUser:
 
         # No se debe crear sesión
         self.session_repo.save.assert_not_called()
+
+    def test_login_fails_when_email_not_verified(self):
+        """
+        Escenario: El usuario existe y la contraseña es correcta pero el email no está verificado.
+        Resultado: EmailNotVerifiedException (regla 24).
+        """
+        # ARRANGE
+        unverified_user = User(
+            id=UserId(self.test_user_id),
+            email=Email("test@example.com"),
+            password_hash="hashed_password",
+            role=Role.USER,
+            is_email_verified=False,
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
+        )
+        self.user_repo.get_by_email.return_value = unverified_user
+        self.password_hasher.verify.return_value = True
+
+        # ACT + ASSERT
+        with pytest.raises(EmailNotVerifiedException):
+            self.use_case.execute("test@example.com", "correctpassword")
+
+        # No se debe crear sesión ni generar tokens
+        self.session_repo.save.assert_not_called()
+        self.token_provider.generate_access_token.assert_not_called()

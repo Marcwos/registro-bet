@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 from ...domain.entities.auth_session import AuthSession
-from ...domain.exceptions import InvalidCredentialsException
+from ...domain.exceptions import EmailNotVerifiedException, InvalidCredentialsException
 from ...domain.repositories.auth_session_repository import AuthSessionRepository
 from ...domain.repositories.user_repository import UserRepository
 from ...domain.services.password_hasher import PasswordHasher
@@ -46,7 +46,11 @@ class LoginUser:
         if not self.password_hasher.verify(password, user.password_hash):
             raise InvalidCredentialsException()
 
-        # 3. Crear sesion
+        # 3. Verificar que el emai este verificado
+        if not user.is_email_verified:
+            raise EmailNotVerifiedException()
+
+        # 4. Crear sesion
         session_id = uuid4()
         refresh_token = self.token_provider.generate_refresh_token(session_id)
 
@@ -62,7 +66,7 @@ class LoginUser:
         )
         self.session_repository.save(session)
 
-        # 4. Generar access token
+        # 5. Generar access token
         access_token = self.token_provider.generate_access_token(
             user_id=user.id.value,
             role=user.role.value,

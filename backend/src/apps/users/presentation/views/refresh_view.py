@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from ...application.uses_cases.refresh_token import RefreshToken
 from ...domain.exceptions import ExpiredTokenException, InvalidTokenException, SessionRevokedException
-from ...infrastructure.repositories.django_auth_session_repository import DjandoAuthSessionRepository
+from ...infrastructure.repositories.django_auth_session_repository import DjangoAuthSessionRepository
 from ...infrastructure.repositories.django_user_repository import DjangoUserRepository
 from ...infrastructure.services.jwt_token_provider import JwtTokenProvider
 from ..serializers.login_serializer import RefreshRequestSerializer, RefreshResponseSerializers
@@ -27,7 +27,7 @@ class RefreshView(APIView):
 
         use_case = RefreshToken(
             user_repository=DjangoUserRepository(),
-            session_repository=DjandoAuthSessionRepository(),
+            session_repository=DjangoAuthSessionRepository(),
             token_provider=JwtTokenProvider(),
         )
 

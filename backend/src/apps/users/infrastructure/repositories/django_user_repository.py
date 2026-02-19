@@ -9,7 +9,20 @@ from ..models.user_model import UserModel
 class DjangoUserRepository(UserRepository):
     def save(self, user: User) -> None:
         model = UserMapper.to_model(user)
-        model.save()
+        if UserModel.objects.filter(id=user.id.value).exists():
+            model._state.adding = False
+            model.save(
+                update_fields=[
+                    "email",
+                    "password_hash",
+                    "role",
+                    "is_email_verified",
+                    "created_at",
+                    "updated_at",
+                ]
+            )
+        else:
+            model.save()
 
     def get_by_id(self, user_id: UserId) -> User | None:
         try:

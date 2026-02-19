@@ -7,7 +7,7 @@ from ...infrastructure.mappers.auth_session_mapper import AuthSessionMapper
 from ...infrastructure.models.auth_session_model import AuthSessionModel
 
 
-class DjandoAuthSessionRepository(AuthSessionRepository):
+class DjangoAuthSessionRepository(AuthSessionRepository):
     def save(self, session: AuthSession) -> None:
         model = AuthSessionMapper.to_model(session)
         model.save()
