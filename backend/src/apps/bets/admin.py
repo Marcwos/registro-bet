@@ -3,6 +3,7 @@
 from django.contrib import admin
 
 from .infrastructure.models.bet_category_model import BetCategoryModel
+from .infrastructure.models.bet_model import BetModel
 from .infrastructure.models.bet_status_model import BetStatusModel
 from .infrastructure.models.sport_model import SportModel
 
@@ -23,3 +24,17 @@ class BetStatusAdmin(admin.ModelAdmin):
 class BetCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name",)
+
+
+@admin.register(BetModel)
+class BetAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "user_id",
+        "stake_amount",
+        "odds",
+        "status_id",
+        "placed_at",
+    )
+    search_fields = ("title",)
+    list_filter = ("status_id",)

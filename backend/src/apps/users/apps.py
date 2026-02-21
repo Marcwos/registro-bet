@@ -6,5 +6,5 @@ class UsersConfig(AppConfig):
     label = "users"
 
     def ready(self):
-        # Registrar extensión de drf-spectacular para JwtAuthentication
-        pass
+        # Importar extensión para que drf-spectacular la descubra automáticamente
+        import src.apps.users.infrastructure.authentication.jwt_scheme  # noqa: F401

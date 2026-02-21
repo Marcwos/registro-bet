@@ -1,0 +1,75 @@
+"""
+Tests — Use Case: DeleteBet
+
+Testeamos:
+  - Eliminar apuesta exitosamente
+  - Falla si no existe
+  - Falla si no es del usuario
+"""
+
+from datetime import UTC, datetime
+from decimal import Decimal
+from unittest.mock import Mock
+from uuid import uuid4
+
+import pytest
+
+from ...application.use_cases.delete_bet import DeleteBet
+from ...domain.entities.bet import Bet
+from ...domain.exceptions import BetAccessDeniedException, BetNotFoundException
+from ...domain.repositories.bet_repository import BetRepository
+from ...domain.value_objects.money import Money
+from ...domain.value_objects.odds import Odds
+
+
+class TestDeleteBet:
+    def setup_method(self):
+        self.bet_repo = Mock(spec=BetRepository)
+        self.use_case = DeleteBet(self.bet_repo)
+        self.user_id = uuid4()
+        self.bet_id = uuid4()
+        now = datetime.now(UTC)
+
+        self.existing_bet = Bet(
+            id=self.bet_id,
+            user_id=self.user_id,
+            title="Apuesta 1 del dia",
+            stake_amount=Money(amount=Decimal("10.00")),
+            odds=Odds(value=Decimal("2.00")),
+            profit_expected=Decimal("10.00"),
+            profit_final=None,
+            status_id=uuid4(),
+            sport_id=None,
+            category_id=None,
+            description="",
+            placed_at=now,
+            settled_at=None,
+            created_at=now,
+            updated_at=now,
+        )
+
+    def test_delete_bet_successfully(self):
+        """Elimina una apuesta del usuario."""
+        self.bet_repo.get_by_id.return_value = self.existing_bet
+
+        self.use_case.execute(bet_id=self.bet_id, user_id=self.user_id)
+
+        self.bet_repo.delete.assert_called_once_with(self.bet_id)
+
+    def test_delete_fails_when_not_found(self):
+        """Falla si la apuesta no existe."""
+        self.bet_repo.get_by_id.return_value = None
+
+        with pytest.raises(BetNotFoundException):
+            self.use_case.execute(bet_id=self.bet_id, user_id=self.user_id)
+
+        self.bet_repo.delete.assert_not_called()
+
+    def test_delete_fails_when_not_owned(self):
+        """Falla si la apuesta no es del usuario."""
+        self.bet_repo.get_by_id.return_value = self.existing_bet
+
+        with pytest.raises(BetAccessDeniedException):
+            self.use_case.execute(bet_id=self.bet_id, user_id=uuid4())
+
+        self.bet_repo.delete.assert_not_called()

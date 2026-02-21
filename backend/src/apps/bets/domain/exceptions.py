@@ -25,3 +25,36 @@ class BetCategoryNotFoundException(BetsDomainException):
 class BetStatusNotFoundException(BetsDomainException):
     def __init__(self):
         super().__init__("Estado de apuesta no encontrado")
+
+
+class BetNotFoundException(BetsDomainException):
+    def __init__(self):
+        super().__init__("Apuesta no encontradda")
+
+
+class BetAccessDeniedException(BetsDomainException):
+    def __init__(self):
+        super().__init__("No tienes acceso a esta apuesta")
+
+
+class BetNotEditableException(BetsDomainException):
+    def __init__(self):
+        super().__init__(
+            "La apuesta no es editable sin confirmacion. Envia confirm=true para editar una apuesta cerrada"
+        )
+
+
+class InvalidStakeAmountException(BetsDomainException):
+    def __init__(self, detail: str = ""):
+        msg = "Monto de apuesta invalido"
+        if detail:
+            msg = f"{msg}: {detail}"
+        super().__init__(msg)
+
+
+class InvalidOddsException(BetsDomainException):
+    def __init__(self, detail: str = ""):
+        msg = "Couta invalida"
+        if detail:
+            msg = f"{msg}: {detail}"
+        super().__init__(msg)
