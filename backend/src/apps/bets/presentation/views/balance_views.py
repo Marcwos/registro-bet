@@ -60,11 +60,11 @@ class DailyBalanceView(APIView):
         status_repo = DjangoBetStatusRepository()
 
         use_case = GetDailyBalance(bet_repo, status_repo)
-        balance = use_case.execute(user_id=user_id, target_date=target_date)
+        balance = use_case.execute(user_id=user_id, tarjet_date=target_date)
 
         serializer = DailyBalanceResponseSerializer(
             {
-                "target_date": balance.target_date,
+                "target_date": balance.tarjet_date,
                 "total_staked": balance.total_staked,
                 "total_won": balance.total_won,
                 "total_lost": balance.total_lost,
