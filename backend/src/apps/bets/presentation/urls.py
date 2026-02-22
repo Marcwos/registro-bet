@@ -1,5 +1,6 @@
 from django.urls import path
 
+from .views.balance_views import BetHistoryView, DailyBalanceView, TotalBalanceView
 from .views.bet_category_views import BetCategoryDetailView, BetCategoryListCreateView
 from .views.bet_status_views import BetStatusListView
 from .views.bet_views import BetChangeStatusView, BetDetailView, BetListCreateView
@@ -14,4 +15,7 @@ urlpatterns = [
     path("", BetListCreateView.as_view(), name="bet_list_create"),
     path("<uuid:bet_id>/", BetDetailView.as_view(), name="bet_detail"),
     path("<uuid:bet_id>/status/", BetChangeStatusView.as_view(), name="bet_change_status"),
+    path("balance/daily/", DailyBalanceView.as_view(), name="daily_balance"),
+    path("balance/total/", TotalBalanceView.as_view(), name="total_balance"),
+    path("history/", BetHistoryView.as_view(), name="bet_history"),
 ]

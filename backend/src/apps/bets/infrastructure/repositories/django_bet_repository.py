@@ -50,3 +50,18 @@ class DjangoBetRepository(BetRepository):
             user_id=user_id,
             placed_at__date=target_date,
         ).count()
+
+    def get_by_user_and_date(self, user_id: UUID, tarjet_date: date) -> list[Bet]:
+        models = BetModel.objects.filter(
+            user_id=user_id,
+            placed_at__date=tarjet_date,
+        ).order_by["-placed_at"]
+        return [BetMapper.to_domain(m) for m in models]
+
+    def get_by_user_date_range(self, user_id: UUID, start_date: date, end_date: date) -> list[Bet]:
+        models = BetModel.objects.filter(
+            user_id=user_id,
+            placed_at__date__gte=start_date,
+            placed_at__date__lte=end_date,
+        ).order_by("-placed_at")
+        return [BetMapper.to_domain(m) for m in models]
