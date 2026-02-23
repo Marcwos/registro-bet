@@ -39,7 +39,7 @@ repos:
     hooks:
       - id: django-tests
         name: Django Tests (pytest)
-        entry: bash -c 'cd backend && uv run pytest --tb=short -q'
+        entry: uv run --directory backend pytest --tb=short -q
         language: system
         pass_filenames: false
         always_run: true
