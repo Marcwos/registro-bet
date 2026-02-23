@@ -31,3 +31,15 @@ repos:
         args: ['--fix']               # Autocorrige lo que pueda
       # Formatter: formatea el código (como Black, pero más rápido)
       - id: ruff-format
+
+  # ─── Tests (pytest + Django) ────────────────────────────────
+  # Ejecuta los tests antes de cada commit.
+  # Si algún test falla, el commit se bloquea.
+  - repo: local
+    hooks:
+      - id: django-tests
+        name: Django Tests (pytest)
+        entry: bash -c 'cd backend && uv run pytest --tb=short -q'
+        language: system
+        pass_filenames: false
+        always_run: true

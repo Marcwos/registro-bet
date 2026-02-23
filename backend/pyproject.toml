@@ -24,6 +24,11 @@ dev = [
     "ruff>=0.15.0",
 ]
 
+# ─── Configuración de pytest-django ────────────────────────
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "src.config.settings"
+pythonpath = ["."]
+
 # ─── Configuración de cobertura (pytest-cov) ──────────────
 [tool.coverage.run]
 # Qué código medir (solo tu código, no librerías)
