@@ -6,6 +6,7 @@ class CreateBetRequestSerializer(serializers.Serializer):
 
     stake_amount = serializers.DecimalField(max_digits=12, decimal_places=2)
     odds = serializers.DecimalField(max_digits=8, decimal_places=2)
+    profit_expected = serializers.DecimalField(max_digits=12, decimal_places=2)
     profit_final = serializers.DecimalField(max_digits=12, decimal_places=2, required=False, allow_null=True)
     placed_at = serializers.DateTimeField(required=False)
     sport_id = serializers.UUIDField(required=False, allow_null=True)
@@ -18,6 +19,7 @@ class UpdateBetRequestSerializer(serializers.Serializer):
 
     stake_amount = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
     odds = serializers.DecimalField(max_digits=8, decimal_places=2, required=False)
+    profit_expected = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
     profit_final = serializers.DecimalField(max_digits=12, decimal_places=2, required=False, allow_null=True)
     placed_at = serializers.DateTimeField(required=False)
     description = serializers.CharField(required=False, allow_blank=True)

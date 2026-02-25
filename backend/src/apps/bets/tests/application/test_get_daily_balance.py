@@ -71,9 +71,9 @@ class TestGetDailyBalance:
         result = self.use_case.execute(user_id=user_id, tarjet_date=target)
 
         assert result.tarjet_date == target
-        assert result.total_won == Decimal("15.00")
+        assert result.total_won == Decimal("10.00")
         assert result.total_lost == Decimal("8.00")
-        assert result.net_profit == Decimal("7.00")
+        assert result.net_profit == Decimal("2.00")
         assert result.bet_count == 3
         assert result.won_count == 1
         assert result.lost_count == 1
@@ -101,9 +101,11 @@ class TestGetDailyBalance:
 
         result = self.use_case.execute(user_id=uuid4(), tarjet_date=date(2026, 2, 21))
 
-        assert result.total_won == Decimal("28.00")
+        # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake
+        # 10 + 5 = 15
+        assert result.total_won == Decimal("15.00")
         assert result.total_lost == Decimal("0.00")
-        assert result.net_profit == Decimal("28.00")
+        assert result.net_profit == Decimal("15.00")
         assert result.won_count == 2
 
     def test_daily_balance_only_losses(self):

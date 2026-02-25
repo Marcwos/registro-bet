@@ -1,5 +1,4 @@
 from datetime import UTC, datetime
-from decimal import Decimal
 from uuid import UUID
 
 from ...domain.entities.bet import Bet
@@ -49,6 +48,9 @@ class UpdateBet:
                 raise InvalidOddsException(str(e)) from e
             bet.odds = bet_odds
 
+        if "profit_expected" in updates:
+            bet.profit_expected = updates["profit_expected"]
+
         if "profit_final" in updates:
             bet.profit_final = updates["profit_final"]
 
@@ -57,10 +59,6 @@ class UpdateBet:
 
         if "description" in updates:
             bet.description = updates["description"].strip()
-
-        # Recalcular ganancia esperada si cambiaron stake u odds
-        if "stake_amount" in updates or "odds" in updates:
-            bet.profit_expected = (bet.stake_amount.amount * (bet.odds.value - Decimal("1"))).quantize(Decimal("0.01"))
 
         bet.updated_at = datetime.now(UTC)
         self.bet_repository.save(bet)

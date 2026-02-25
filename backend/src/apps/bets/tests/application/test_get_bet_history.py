@@ -75,9 +75,10 @@ class TestGetBetHistory:
         assert len(bets) == 2
         assert summary.start_date == start
         assert summary.end_date == end
-        assert summary.total_won == Decimal("15.00")
+        # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake = 10
+        assert summary.total_won == Decimal("10.00")
         assert summary.total_lost == Decimal("5.00")
-        assert summary.net_profit == Decimal("10.00")
+        assert summary.net_profit == Decimal("5.00")
         assert summary.bet_count == 2
         assert summary.won_count == 1
         assert summary.lost_count == 1

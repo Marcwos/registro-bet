@@ -15,3 +15,4 @@
 | 3  | [Modelo Entidad-Relación](./modelo-entidad-relacion.md)            | Diagrama ER y relaciones entre entidades             |
 | 4  | [Stack y Arquitectura](./stack-y-arquitectura.md)                  | Tecnologías, arquitectura y patrones de diseño       |
 | 5  | [Reglas de Negocio](./reglas-de-negocio.md)                        | Lógica del dominio, cálculos y decisiones técnicas   |
+| 6  | [Diagramas de Flujo](./diagramas-flujo.md)                         | Flujos del usuario con diagramas Mermaid             |

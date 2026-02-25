@@ -311,8 +311,8 @@ erDiagram
 - Entidad `Bet` con value objects `Money` y `Odds`
 - Repositorio `BetRepository` (puerto abstracto + implementación Django)
 - Use cases: `CreateBet`, `UpdateBet`, `DeleteBet`, `GetBet`, `ListUserBets`, `ChangeStatus`
-- Título automático: "Apuesta N del dia"
-- Cálculo automático de `profit_expected = stake * (odds - 1)`
+- Título automático: "Apuesta 1", "Apuesta 2", etc.
+- `profit_expected` ingresado por el usuario (varía según casa de apuestas, bonos, etc.)
 - Apuestas cerradas editables solo con `confirm=true`
 - Vistas con permisos por usuario
 

@@ -2,14 +2,14 @@
 Tests de dominio — Servicio: BalanceCalculator
 
 Testeamos:
-  - Balance con apuestas ganadas (suma profit_final)
+  - Balance con apuestas ganadas (usa stake * (odds - 1))
   - Balance con apuestas perdidas (resta stake_amount)
   - Balance con apuestas nulas (impacto 0)
   - Balance con apuestas pendientes (no afecta)
   - Balance mixto (todas combinadas)
   - Balance con lista vacía
   - Apuesta con status desconocido se ignora
-  - Ganada sin profit_final no suma nada
+  - Varias ganadas acumulan correctamente
 """
 
 from datetime import UTC, datetime
@@ -62,8 +62,8 @@ class TestBalanceCalculator:
         }
         self.calculator = BalanceCalculator(self.status_map)
 
-    def test_won_bets_add_profit_final(self):
-        """Ganadas suman profit_final al balance."""
+    def test_won_bets_add_profit_real(self):
+        """Ganadas suman stake * (odds - 1) al balance."""
         bets = [
             _make_bet(self.won.id, stake="10.00", profit_final="15.00"),
             _make_bet(self.won.id, stake="20.00", profit_final="30.00"),
@@ -71,7 +71,9 @@ class TestBalanceCalculator:
 
         result = self.calculator.calculate(bets)
 
-        assert result["total_won"] == Decimal("45.00")
+        # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake
+        # 10 + 20 = 30
+        assert result["total_won"] == Decimal("30.00")
         assert result["won_count"] == 2
         assert result["total_staked"] == Decimal("30.00")
 
@@ -123,9 +125,10 @@ class TestBalanceCalculator:
 
         result = self.calculator.calculate(bets)
 
-        assert result["total_won"] == Decimal("15.00")
+        # won: 10 * (2.00 - 1) = 10.00
+        assert result["total_won"] == Decimal("10.00")
         assert result["total_lost"] == Decimal("8.00")
-        assert result["net_profit"] == Decimal("7.00")
+        assert result["net_profit"] == Decimal("2.00")
         assert result["total_staked"] == Decimal("43.00")
         assert result["bet_count"] == 4
         assert result["won_count"] == 1
@@ -161,14 +164,15 @@ class TestBalanceCalculator:
         assert result["void_count"] == 0
         assert result["pending_count"] == 0
 
-    def test_won_bet_without_profit_final_does_not_add(self):
-        """Ganada sin profit_final no suma a total_won."""
+    def test_won_bet_without_profit_final_still_calculates(self):
+        """Ganada sin profit_final igual calcula profit_real desde odds."""
         bets = [_make_bet(self.won.id, stake="10.00", profit_final=None)]
 
         result = self.calculator.calculate(bets)
 
         assert result["won_count"] == 1
-        assert result["total_won"] == Decimal("0.00")
+        # profit_real = 10 * (2.00 - 1) = 10.00
+        assert result["total_won"] == Decimal("10.00")
 
     def test_multiple_won_bets_accumulate(self):
         """Varias ganadas acumulan correctamente."""
@@ -180,7 +184,9 @@ class TestBalanceCalculator:
 
         result = self.calculator.calculate(bets)
 
-        assert result["total_won"] == Decimal("32.00")
+        # odds=2.00 -> profit_real = stake * 1 = stake
+        # 5 + 10 + 3 = 18
+        assert result["total_won"] == Decimal("18.00")
         assert result["total_staked"] == Decimal("18.00")
-        assert result["net_profit"] == Decimal("32.00")
+        assert result["net_profit"] == Decimal("18.00")
         assert result["won_count"] == 3

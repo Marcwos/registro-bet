@@ -27,7 +27,7 @@ class TestBet:
         bet = Bet(
             id=bet_id,
             user_id=user_id,
-            title="Apuesta 1 del dia",
+            title="Apuesta 1",
             stake_amount=Money(amount=Decimal("10.00")),
             odds=Odds(value=Decimal("2.50")),
             profit_expected=Decimal("15.00"),
@@ -44,7 +44,7 @@ class TestBet:
 
         assert bet.id == bet_id
         assert bet.user_id == user_id
-        assert bet.title == "Apuesta 1 del dia"
+        assert bet.title == "Apuesta 1"
         assert bet.stake_amount.amount == Decimal("10.00")
         assert bet.odds.value == Decimal("2.50")
         assert bet.profit_expected == Decimal("15.00")
@@ -63,7 +63,7 @@ class TestBet:
         bet = Bet(
             id=uuid4(),
             user_id=uuid4(),
-            title="Apuesta 1 del dia",
+            title="Apuesta 1",
             stake_amount=Money(amount=Decimal("5.00")),
             odds=Odds(value=Decimal("1.80")),
             profit_expected=Decimal("4.00"),

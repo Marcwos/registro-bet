@@ -5,7 +5,7 @@ Testeamos:
   - Actualizar apuesta pendiente libremente
   - Falla al editar cerrada sin confirmación
   - Editar cerrada con confirm=True
-  - Recalcula profit_expected al cambiar stake u odds
+  - Actualizar profit_expected directamente
   - Falla si no existe
   - Falla si no es del usuario
 """
@@ -50,7 +50,7 @@ class TestUpdateBet:
         self.existing_bet = Bet(
             id=self.bet_id,
             user_id=self.user_id,
-            title="Apuesta 1 del dia",
+            title="Apuesta 1",
             stake_amount=Money(amount=Decimal("10.00")),
             odds=Odds(value=Decimal("2.50")),
             profit_expected=Decimal("15.00"),
@@ -77,8 +77,6 @@ class TestUpdateBet:
         )
 
         assert result.stake_amount.amount == Decimal("20.00")
-        # profit_expected recalculado: 20 * (2.50 - 1) = 30.00
-        assert result.profit_expected == Decimal("30.00")
         self.bet_repo.save.assert_called_once()
 
     def test_update_closed_bet_fails_without_confirm(self):
@@ -112,19 +110,18 @@ class TestUpdateBet:
         assert result.profit_final == Decimal("25.00")
         self.bet_repo.save.assert_called_once()
 
-    def test_update_recalculates_profit_expected(self):
-        """Recalcula profit_expected cuando cambia odds."""
+    def test_update_profit_expected_directly(self):
+        """Actualiza profit_expected con el valor ingresado por el usuario."""
         self.bet_repo.get_by_id.return_value = self.existing_bet
         self.status_repo.get_by_id.return_value = self.pending_status
 
         result = self.use_case.execute(
             bet_id=self.bet_id,
             user_id=self.user_id,
-            odds=Decimal("3.00"),
+            profit_expected=Decimal("25.00"),
         )
 
-        # 10 * (3.00 - 1) = 20.00
-        assert result.profit_expected == Decimal("20.00")
+        assert result.profit_expected == Decimal("25.00")
 
     def test_update_description(self):
         """Actualiza la descripción."""

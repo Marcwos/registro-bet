@@ -76,9 +76,11 @@ class TestGetTotalBalance:
 
         result = self.use_case.execute(user_id=user_id)
 
-        assert result.total_won == Decimal("55.00")
+        # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake
+        # won: 10 + 20 = 30
+        assert result.total_won == Decimal("30.00")
         assert result.total_lost == Decimal("15.00")
-        assert result.net_profit == Decimal("40.00")
+        assert result.net_profit == Decimal("15.00")
         assert result.total_staked == Decimal("50.00")
         assert result.bet_count == 4
         assert result.won_count == 2

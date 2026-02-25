@@ -18,6 +18,7 @@ from ...domain.exceptions import (
     BetNotFoundException,
     BetStatusNotFoundException,
     InvalidOddsException,
+    InvalidProfitExpectedException,
     InvalidStakeAmountException,
 )
 from ...infrastructure.repositories.django_bet_repository import DjangoBetRepository
@@ -93,7 +94,7 @@ class BetListCreateView(APIView):
         try:
             use_case = CreateBet(bet_repo, status_repo)
             bet = use_case.execute(user_id=user_id, **serializer.validated_data)
-        except (InvalidStakeAmountException, InvalidOddsException) as e:
+        except (InvalidStakeAmountException, InvalidOddsException, InvalidProfitExpectedException) as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except BetStatusNotFoundException as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

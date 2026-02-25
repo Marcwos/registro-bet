@@ -58,3 +58,11 @@ class InvalidOddsException(BetsDomainException):
         if detail:
             msg = f"{msg}: {detail}"
         super().__init__(msg)
+
+
+class InvalidProfitExpectedException(BetsDomainException):
+    def __init__(self, detail: str = ""):
+        msg = "Ganancia esperada invalida"
+        if detail:
+            msg = f"{msg}: {detail}"
+        super().__init__(msg)

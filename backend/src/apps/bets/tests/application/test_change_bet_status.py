@@ -50,7 +50,7 @@ class TestChangeStatus:
         self.existing_bet = Bet(
             id=self.bet_id,
             user_id=self.user_id,
-            title="Apuesta 1 del dia",
+            title="Apuesta 1",
             stake_amount=Money(amount=Decimal("10.00")),
             odds=Odds(value=Decimal("2.50")),
             profit_expected=Decimal("15.00"),

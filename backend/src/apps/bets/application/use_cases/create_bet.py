@@ -3,7 +3,12 @@ from decimal import Decimal
 from uuid import UUID, uuid4
 
 from ...domain.entities.bet import Bet
-from ...domain.exceptions import BetStatusNotFoundException, InvalidOddsException, InvalidStakeAmountException
+from ...domain.exceptions import (
+    BetStatusNotFoundException,
+    InvalidOddsException,
+    InvalidProfitExpectedException,
+    InvalidStakeAmountException,
+)
 from ...domain.repositories.bet_repository import BetRepository
 from ...domain.repositories.bet_status_repository import BetStatusRepository
 from ...domain.value_objects.money import Money
@@ -20,6 +25,7 @@ class CreateBet:
         user_id: UUID,
         stake_amount: Decimal,
         odds: Decimal,
+        profit_expected: Decimal,
         profit_final: Decimal | None = None,
         placed_at: datetime | None = None,
         sport_id: UUID | None = None,
@@ -46,13 +52,14 @@ class CreateBet:
         now = datetime.now(UTC)
         bet_placed_at = placed_at or now
 
-        # Titulo Automatico: "Apuesta N del dia"
+        # Validar ganancia esperada
+        if profit_expected is None or profit_expected < Decimal("0"):
+            raise InvalidProfitExpectedException("La ganancia esperada debe ser mayor o igual a 0.")
+
+        # Titulo Automatico: "Apuesta N"
         bet_date = bet_placed_at.date()
         count = self.bet_repository.count_by_user_and_date(user_id, bet_date)
-        title = f"Apuesta {count + 1} del dia"
-
-        # Calcular ganacia esperada: stake * (odd - 1)
-        profit_expected = (money.amount * (bet_odds.value - Decimal("1"))).quantize(Decimal("0.01"))
+        title = f"Apuesta {count + 1}"
 
         bet = Bet(
             id=uuid4(),
