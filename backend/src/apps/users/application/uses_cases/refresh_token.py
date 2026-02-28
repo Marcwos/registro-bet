@@ -73,6 +73,9 @@ class RefreshToken:
         self.session_repository.save(new_session)
 
         # 8. Generar un nuevo access token
-        new_access_token = self.token_provider.generate_access_token(user_id=user.id.value)
+        new_access_token = self.token_provider.generate_access_token(
+            user_id=user.id.value,
+            role=user.role.value,
+        )
 
-        return RefreshResult(access_token=new_access_token, refresh_token=new_access_token)
+        return RefreshResult(access_token=new_access_token, refresh_token=new_refresh_token)

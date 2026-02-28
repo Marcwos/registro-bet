@@ -9,6 +9,8 @@ class UserModel(models.Model):
     password_hash = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
     is_email_verified = models.BooleanField(default=False)
+    theme_preference = models.CharField(max_length=10, default="light")
+    timezone = models.CharField(max_length=50, default="UTC")
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 

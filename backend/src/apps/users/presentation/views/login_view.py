@@ -43,6 +43,7 @@ class LoginView(APIView):
                 password=serializer.validated_data["password"],
                 user_agent=request.META.get("HTTP_USER_AGENT", ""),
                 ip_address=request.META.get("REMOTE_ADDR", "127.0.0.1"),
+                remember_me=serializer.validated_data.get("remember_me", False),
             )
         except InvalidCredentialsException as e:
             return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)

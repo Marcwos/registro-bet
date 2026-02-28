@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import timedelta
 from typing import Any
 from uuid import UUID
 
@@ -9,7 +10,7 @@ class TokenProvider(ABC):
         """Genera un access token de vida corta"""
 
     @abstractmethod
-    def generate_refresh_token(self, session_id: UUID) -> str:
+    def generate_refresh_token(self, session_id: UUID, lifetime: timedelta | None = None) -> str:
         """Genera un refesh token de vida larga"""
 
     @abstractmethod

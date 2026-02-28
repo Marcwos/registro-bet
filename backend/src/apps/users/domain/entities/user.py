@@ -15,3 +15,5 @@ class User:
     is_email_verified: bool
     created_at: datetime
     updated_at: datetime
+    theme_preference: str = "light"
+    timezone: str = "UTC"

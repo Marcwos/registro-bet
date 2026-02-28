@@ -17,6 +17,8 @@ class DjangoUserRepository(UserRepository):
                     "password_hash",
                     "role",
                     "is_email_verified",
+                    "theme_preference",
+                    "timezone",
                     "created_at",
                     "updated_at",
                 ]

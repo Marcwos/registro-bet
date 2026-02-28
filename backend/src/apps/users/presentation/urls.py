@@ -8,6 +8,7 @@ from .views.register_view import RegisterView
 from .views.reset_password_view import ResetPasswordView
 from .views.send_password_recovery_view import SendPasswordRecoveryView
 from .views.send_verification_email_view import SendVerificationEmailView
+from .views.update_preferences_view import UpdatePreferencesView
 from .views.verify_email_view import VerifyEmailView
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     path("recover-password/", SendPasswordRecoveryView.as_view(), name="user_recover_password"),
     path("reset-password/", ResetPasswordView.as_view(), name="user_reset_password"),
     path("change-password/", ChangePasswordView.as_view(), name="user_change_password"),
+    path("preferences/", UpdatePreferencesView.as_view(), name="user_preferences"),
 ]

@@ -27,13 +27,14 @@ class JwtTokenProvider(TokenProvider):
         }
         return jwt.encode(payload, self.secret, algorithm=self.algorithm)
 
-    def generate_refresh_token(self, session_id: UUID) -> str:
+    def generate_refresh_token(self, session_id: UUID, lifetime: timedelta | None = None) -> str:
         now = datetime.now(UTC)
+        effective_lifetime = lifetime or self.refresh_token_lifetime
         payload = {
             "session_id": str(session_id),
             "type": "refresh",
             "iat": now,
-            "exp": now + self.refresh_token_lifetime,
+            "exp": now + effective_lifetime,
         }
         return jwt.encode(payload, self.secret, algorithm=self.algorithm)
 

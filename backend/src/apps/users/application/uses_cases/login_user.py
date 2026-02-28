@@ -38,7 +38,9 @@ class LoginUser:
         self.token_provider = token_provider
         self.audit_service = audit_service
 
-    def execute(self, email: str, password: str, user_agent: str = "", ip_address: str = "") -> LoginResult:
+    def execute(
+        self, email: str, password: str, user_agent: str = "", ip_address: str = "", remember_me: bool = False
+    ) -> LoginResult:
         # 1. Buscar Usuario
         email_vo = Email(email)
         user = self.user_repository.get_by_email(email_vo)
@@ -56,13 +58,14 @@ class LoginUser:
 
         # 4. Crear sesion
         session_id = uuid4()
-        refresh_token = self.token_provider.generate_refresh_token(session_id)
+        session_lifetime = timedelta(days=30) if remember_me else timedelta(days=7)
+        refresh_token = self.token_provider.generate_refresh_token(session_id, lifetime=session_lifetime)
 
         session = AuthSession(
             id=session_id,
             user_id=user.id.value,
             refresh_token_hash=hashlib.sha256(refresh_token.encode()).hexdigest(),
-            expires_at=datetime.now(UTC) + timedelta(days=7),
+            expires_at=datetime.now(UTC) + session_lifetime,
             created_at=datetime.now(UTC),
             revoked_at=None,
             user_agent=user_agent,

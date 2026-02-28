@@ -14,6 +14,8 @@ class UserMapper:
             password_hash=model.password_hash,
             role=Role(model.role),
             is_email_verified=model.is_email_verified,
+            theme_preference=model.theme_preference,
+            timezone=model.timezone,
             created_at=model.created_at,
             updated_at=model.updated_at,
         )
@@ -26,6 +28,8 @@ class UserMapper:
             password_hash=entity.password_hash,
             role=entity.role.value,
             is_email_verified=entity.is_email_verified,
+            theme_preference=entity.theme_preference,
+            timezone=entity.timezone,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )
