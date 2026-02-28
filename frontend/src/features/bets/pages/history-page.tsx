@@ -143,20 +143,20 @@ export function HistoryPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-4 md:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Historial</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-bold text-slate-900 md:text-2xl">Historial</h1>
+        <p className="mt-0.5 text-xs text-slate-500 md:mt-1 md:text-sm">
           Filtra y revisa tus apuestas por rango de fechas
         </p>
       </div>
 
       {/* Date range picker */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex-1 min-w-[160px]">
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+      <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm md:p-6">
+        <div className="flex flex-wrap items-end gap-3 md:gap-4">
+          <div className="flex-1 min-w-[130px]">
+            <label className="mb-1 block text-xs font-medium text-slate-700 md:mb-1.5 md:text-sm">
               Fecha inicio
             </label>
             <div className="relative">
@@ -170,8 +170,8 @@ export function HistoryPage() {
             </div>
           </div>
 
-          <div className="flex-1 min-w-[160px]">
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <div className="flex-1 min-w-[130px]">
+            <label className="mb-1 block text-xs font-medium text-slate-700 md:mb-1.5 md:text-sm">
               Fecha fin
             </label>
             <div className="relative">
@@ -210,7 +210,7 @@ export function HistoryPage() {
       {data && !isLoading && (
         <>
           {/* Stat cards */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
             <StatCard
               label="Ganancia neta"
               value={formatMoney(netProfit)}
@@ -238,7 +238,7 @@ export function HistoryPage() {
           </div>
 
           {/* Count badges */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 md:gap-3">
             <CountBadge
               label="Total"
               count={summary?.bet_count ?? 0}
@@ -278,17 +278,17 @@ export function HistoryPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {grouped.map(({ date, bets: dayBets }) => (
                 <div
                   key={date}
                   className="rounded-2xl border border-slate-200 bg-white shadow-sm"
                 >
-                  <div className="border-b border-slate-200 px-6 py-4">
-                    <h2 className="text-lg font-semibold text-slate-900">
+                  <div className="border-b border-slate-200 px-4 py-3 md:px-6 md:py-4">
+                    <h2 className="text-base font-semibold text-slate-900 md:text-lg">
                       {formatDisplayDate(date)}
                     </h2>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-xs text-slate-500 md:text-sm">
                       {dayBets.length} apuesta{dayBets.length !== 1 && "s"}
                     </p>
                   </div>
@@ -356,7 +356,7 @@ function CountBadge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${className}`}
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium md:gap-1.5 md:px-3 md:py-1 md:text-sm ${className}`}
     >
       {label}
       <span className="font-bold">{count}</span>

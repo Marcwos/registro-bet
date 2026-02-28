@@ -28,23 +28,23 @@ export function BetTable({ bets, statuses, onChangeStatus, onEdit, onDelete }: B
       <table className="w-full">
         <thead>
           <tr className="border-b border-slate-200">
-            <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+            <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-slate-500 md:px-4 md:py-3">
               Titulo
             </th>
-            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+            <th className="px-2 py-2 text-right text-xs font-medium uppercase tracking-wider text-slate-500 md:px-4 md:py-3">
               Monto
             </th>
-            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+            <th className="px-2 py-2 text-right text-xs font-medium uppercase tracking-wider text-slate-500 md:px-4 md:py-3">
               Cuota
             </th>
-            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+            <th className="px-2 py-2 text-right text-xs font-medium uppercase tracking-wider text-slate-500 md:px-4 md:py-3">
               Ganancia
             </th>
-            <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-slate-500">
+            <th className="hidden px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-slate-500 md:table-cell md:px-4 md:py-3">
               Estado
             </th>
-            <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
-              Acciones
+            <th className="px-2 py-2 text-right text-xs font-medium uppercase tracking-wider text-slate-500 md:px-4 md:py-3">
+              <span className="sr-only">Acciones</span>
             </th>
           </tr>
         </thead>
@@ -130,23 +130,27 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
 
   return (
     <tr className="transition-colors hover:bg-slate-50">
-      <td className="px-4 py-3">
-        <div>
-          <p className="text-sm font-medium text-slate-900">{bet.title}</p>
+      <td className="px-2 py-2 md:px-4 md:py-3">
+        <div className="min-w-0">
+          <p className="truncate text-xs font-medium text-slate-900 md:text-sm">{bet.title}</p>
           {bet.description && (
             <p className="mt-0.5 text-xs text-slate-400 line-clamp-1">
               {bet.description}
             </p>
           )}
+          {/* Estado visible solo en mobile, debajo del titulo */}
+          <div className="mt-1 md:hidden">
+            <StatusBadge code={statusCode} />
+          </div>
         </div>
       </td>
-      <td className="px-4 py-3 text-right text-sm text-slate-700">
+      <td className="px-2 py-2 text-right text-xs text-slate-700 md:px-4 md:py-3 md:text-sm">
         ${Number(bet.stake_amount).toFixed(2)}
       </td>
-      <td className="px-4 py-3 text-right text-sm text-slate-700">
+      <td className="px-2 py-2 text-right text-xs text-slate-700 md:px-4 md:py-3 md:text-sm">
         {Number(bet.odds).toFixed(2)}
       </td>
-      <td className={`px-4 py-3 text-right text-sm font-medium ${profitClass}`}>
+      <td className={`px-2 py-2 text-right text-xs font-medium md:px-4 md:py-3 md:text-sm ${profitClass}`}>
         {tooltipText ? (
           <span
             className="relative cursor-pointer"
@@ -166,10 +170,10 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
           profitText
         )}
       </td>
-      <td className="px-4 py-3 text-center">
+      <td className="hidden px-2 py-2 text-center md:table-cell md:px-4 md:py-3">
         <StatusBadge code={statusCode} />
       </td>
-      <td className="px-4 py-3 text-right">
+      <td className="px-1 py-2 text-right md:px-4 md:py-3">
         <div className="relative inline-block" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}

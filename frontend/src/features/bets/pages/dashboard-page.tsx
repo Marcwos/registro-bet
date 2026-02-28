@@ -99,23 +99,24 @@ export function DashboardPage() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-4 md:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-bold text-slate-900 md:text-2xl">Dashboard</h1>
+        <p className="mt-0.5 text-xs text-slate-500 md:mt-1 md:text-sm">
           Resumen de tus apuestas y rendimiento
         </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {/* Stats Cards — 2-col grid en mobile, 3-col en md+ */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6">
         <StatCard
           label="Ganancia neta total"
           value={formatMoney(totalWon)}
           icon={TrendingUp}
           trend={getTrend(totalWon)}
           index={0}
+          className="col-span-2 md:col-span-1"
         />
         <StatCard
           label="Retorno total"
@@ -134,11 +135,11 @@ export function DashboardPage() {
       </div>
 
       {/* Grid: Formulario + Tabla */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:gap-8 lg:grid-cols-3">
         {/* Formulario (1/3) */}
         <div className="lg:col-span-1">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
+            <h2 className="mb-3 text-base font-semibold text-slate-900 md:mb-4 md:text-lg">
               Nueva apuesta
             </h2>
             <BetForm
@@ -153,11 +154,11 @@ export function DashboardPage() {
         {/* Tabla de hoy (2/3) */}
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 px-6 py-4">
-              <h2 className="text-lg font-semibold text-slate-900">
+            <div className="border-b border-slate-200 px-4 py-3 md:px-6 md:py-4">
+              <h2 className="text-base font-semibold text-slate-900 md:text-lg">
                 Apuestas de hoy
               </h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-xs text-slate-500 md:text-sm">
                 {todayBets.length} apuesta{todayBets.length !== 1 && "s"}
               </p>
             </div>
