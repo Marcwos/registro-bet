@@ -17,7 +17,7 @@ class DjangoBetStatusRepository(BetStatusRepository):
 
     def get_by_id(self, status_id: UUID) -> BetStatus | None:
         try:
-            model = BetStatusModel.objects.filter(id=status_id)
+            model = BetStatusModel.objects.get(id=status_id)
             return BetStatusMapper.to_main(model)
         except BetStatusModel.DoesNotExist:
             return None
