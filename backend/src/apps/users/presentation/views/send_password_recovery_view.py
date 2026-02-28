@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from ...application.uses_cases.send_password_recovery import SendPasswordRecovery
 from ...infrastructure.repositories.django_email_verification_repository import DjangoEmailVerificationRepository
 from ...infrastructure.repositories.django_user_repository import DjangoUserRepository
-from ...infrastructure.services.console_email_sender import ConsoleEmailSender
+from ...infrastructure.services.email_sender_factory import get_email_sender
 from ...infrastructure.services.random_verification_code_generator import RandomVerficationCodeGnerator
 from ..serializers.verification_serializer import SendPasswordRecoverySerializer
 
@@ -31,7 +31,7 @@ class SendPasswordRecoveryView(APIView):
         use_case = SendPasswordRecovery(
             user_repository=DjangoUserRepository(),
             verification_repository=DjangoEmailVerificationRepository(),
-            email_sender=ConsoleEmailSender(),
+            email_sender=get_email_sender(),
             code_generator=RandomVerficationCodeGnerator(),
         )
 

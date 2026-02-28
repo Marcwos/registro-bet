@@ -177,9 +177,9 @@ CORS_ALLOWED_ORIGINS = config(
 CORS_ALLOW_CREDENTIALS = True
 
 # ─── Email Configuration ───────────────────────────────────
-# En desarrollo: los emails se imprimen en consola
-# En produccion: configurar SMTP real
-EMAIL_BACKEND = config(
-    "EMAIL_BACKEND",
-    default="django.core.mail.backends.console.EmailBackend",
-)
+# EMAIL_BACKEND solo para Django internamente (desarrollo/consola)
+# El envío real se hace con el SDK de SendGrid, no con Django mail
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+SENDGRID_API_KEY = config("SENDGRID_API_KEY", default="")
+DEFAULT_FROM_EMAIL = "info.registrobet@gmail.com"

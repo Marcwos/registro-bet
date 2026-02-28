@@ -11,6 +11,12 @@ from rest_framework.test import APIClient
 from src.apps.users.infrastructure.models.user_model import UserModel
 
 
+@pytest.fixture(autouse=True)
+def _disable_sendgrid(settings):
+    """Fuerza ConsoleEmailSender en todos los tests (no enviar emails reales)."""
+    settings.SENDGRID_API_KEY = ""
+
+
 @pytest.fixture
 def api_client():
     """Cliente DRF para hacer requests a la API."""

@@ -7,7 +7,7 @@ from ...application.uses_cases.send_verification_email import SendVerificationEm
 from ...domain.exceptions import CooldownNotExpiredException, EmailAlreadyVerifiedException, UserNotFoundException
 from ...infrastructure.repositories.django_email_verification_repository import DjangoEmailVerificationRepository
 from ...infrastructure.repositories.django_user_repository import DjangoUserRepository
-from ...infrastructure.services.console_email_sender import ConsoleEmailSender
+from ...infrastructure.services.email_sender_factory import get_email_sender
 from ...infrastructure.services.random_verification_code_generator import RandomVerficationCodeGnerator
 from ..serializers.verification_serializer import SendVerificationRequestSerializer
 
@@ -35,7 +35,7 @@ class SendVerificationEmailView(APIView):
         use_case = SendVerificationEmail(
             user_repository=DjangoUserRepository(),
             verification_repository=DjangoEmailVerificationRepository(),
-            email_sender=ConsoleEmailSender(),
+            email_sender=get_email_sender(),
             code_generator=RandomVerficationCodeGnerator(),
         )
         try:
