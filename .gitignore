@@ -37,6 +37,7 @@ htmlcov/
 
 # md
 sprints.md
+sprint-test.md
 # uv
 # uv.lock se sube al repo (es como el package-lock.json)
 bettracker/
