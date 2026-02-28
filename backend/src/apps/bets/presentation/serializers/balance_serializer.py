@@ -1,52 +1,36 @@
 from rest_framework import serializers
 
 
-class DailyBalanceResponseSerializer(serializers.Serializer):
+class _BalanceFieldsMixin(serializers.Serializer):
+    """Campos comunes de balance reutilizados por Daily, Total e History."""
+
+    total_staked = serializers.DecimalField(max_digits=12, decimal_places=2)
+    total_won = serializers.DecimalField(max_digits=12, decimal_places=2)
+    total_lost = serializers.DecimalField(max_digits=12, decimal_places=2)
+    total_return = serializers.DecimalField(max_digits=12, decimal_places=2)
+    net_profit = serializers.DecimalField(max_digits=12, decimal_places=2)
+    bet_count = serializers.IntegerField()
+    won_count = serializers.IntegerField()
+    lost_count = serializers.IntegerField()
+    void_count = serializers.IntegerField()
+    pending_count = serializers.IntegerField()
+
+
+class DailyBalanceResponseSerializer(_BalanceFieldsMixin):
     """Respuesta del balance diario"""
 
     target_date = serializers.DateField()
-    total_staked = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_won = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_lost = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_return = serializers.DecimalField(max_digits=12, decimal_places=2)
-    net_profit = serializers.DecimalField(max_digits=12, decimal_places=2)
-    bet_count = serializers.IntegerField()
-    won_count = serializers.IntegerField()
-    lost_count = serializers.IntegerField()
-    void_count = serializers.IntegerField()
-    pending_count = serializers.IntegerField()
 
 
-class TotalBalanceResponseSerializer(serializers.Serializer):
+class TotalBalanceResponseSerializer(_BalanceFieldsMixin):
     """Respuesta del balance total"""
 
-    total_staked = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_won = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_lost = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_return = serializers.DecimalField(max_digits=12, decimal_places=2)
-    net_profit = serializers.DecimalField(max_digits=12, decimal_places=2)
-    bet_count = serializers.IntegerField()
-    won_count = serializers.IntegerField()
-    lost_count = serializers.IntegerField()
-    void_count = serializers.IntegerField()
-    pending_count = serializers.IntegerField()
 
-
-class BetHistorySummarySerializer(serializers.Serializer):
+class BetHistorySummarySerializer(_BalanceFieldsMixin):
     """Resumen del historial filtrado"""
 
     start_date = serializers.DateField()
     end_date = serializers.DateField()
-    total_staked = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_won = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_lost = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_return = serializers.DecimalField(max_digits=12, decimal_places=2)
-    net_profit = serializers.DecimalField(max_digits=12, decimal_places=2)
-    bet_count = serializers.IntegerField()
-    won_count = serializers.IntegerField()
-    lost_count = serializers.IntegerField()
-    void_count = serializers.IntegerField()
-    pending_count = serializers.IntegerField()
 
 
 class BetHistoryQuerySerializer(serializers.Serializer):
