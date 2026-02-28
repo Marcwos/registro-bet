@@ -10,11 +10,10 @@ import { VerifyEmailPage } from "@/features/auth/pages/verify-email-page";
 import { ForgotPasswordPage } from "@/features/auth/pages/forgot-password-page";
 import { ResetPasswordPage } from "@/features/auth/pages/reset-password-page";
 
-// --- Paginas placeholder (Sprint F3/F4/F5) ---
+// --- Paginas de bets ---
+import { DashboardPage } from "@/features/bets/pages/dashboard-page";
 
-function DashboardPage() {
-  return <h1 className="text-2xl font-bold">Dashboard</h1>;
-}
+// --- Paginas placeholder (Sprint F4/F5) ---
 
 function HistoryPage() {
   return <h1 className="text-2xl font-bold">Historial</h1>;
