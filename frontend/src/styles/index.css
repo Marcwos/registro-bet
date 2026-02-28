@@ -3,6 +3,8 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Tema custom */
 @theme {
   --font-sans: "Inter", sans-serif;

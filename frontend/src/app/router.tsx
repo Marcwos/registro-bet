@@ -14,11 +14,8 @@ import { ResetPasswordPage } from "@/features/auth/pages/reset-password-page";
 import { DashboardPage } from "@/features/bets/pages/dashboard-page";
 import { HistoryPage } from "@/features/bets/pages/history-page";
 
-// --- Paginas placeholder (Sprint F5) ---
-
-function SettingsPage() {
-  return <h1 className="text-2xl font-bold">Configuracion</h1>;
-}
+// --- Paginas de settings ---
+import { SettingsPage } from "@/features/auth/pages/settings-page";
 
 // --- Rutas protegidas y publicas ---
 

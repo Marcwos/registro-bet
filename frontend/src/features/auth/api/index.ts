@@ -1,5 +1,6 @@
 import { httpClient } from "@/shared/lib/http-client";
 import type {
+  ChangePasswordRequest,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
@@ -75,4 +76,14 @@ export async function resetPassword(
 
 export async function logoutUser(refreshToken: string): Promise<void> {
   await httpClient.post("/users/logout/", { refresh_token: refreshToken });
+}
+
+export async function changePassword(
+  data: ChangePasswordRequest,
+): Promise<{ message: string }> {
+  const response = await httpClient.post<{ message: string }>(
+    "/users/change-password/",
+    data,
+  );
+  return response.data;
 }
