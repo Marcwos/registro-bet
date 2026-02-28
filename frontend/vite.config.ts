@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["vite.svg"],
+      includeAssets: ["favicon.svg"],
       manifest: {
         name: "RegistroBet",
         short_name: "RegistroBet",
