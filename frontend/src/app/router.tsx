@@ -12,12 +12,9 @@ import { ResetPasswordPage } from "@/features/auth/pages/reset-password-page";
 
 // --- Paginas de bets ---
 import { DashboardPage } from "@/features/bets/pages/dashboard-page";
+import { HistoryPage } from "@/features/bets/pages/history-page";
 
-// --- Paginas placeholder (Sprint F4/F5) ---
-
-function HistoryPage() {
-  return <h1 className="text-2xl font-bold">Historial</h1>;
-}
+// --- Paginas placeholder (Sprint F5) ---
 
 function SettingsPage() {
   return <h1 className="text-2xl font-bold">Configuracion</h1>;

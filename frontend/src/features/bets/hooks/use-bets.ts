@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchBets, fetchDailyBalance, fetchTotalBalance } from "../api";
+import { fetchBets, fetchBetHistory, fetchDailyBalance, fetchTotalBalance } from "../api";
 
 /** Lista todas las apuestas del usuario autenticado */
 export function useBets() {
@@ -22,5 +22,14 @@ export function useTotalBalance() {
   return useQuery({
     queryKey: ["balance", "total"],
     queryFn: fetchTotalBalance,
+  });
+}
+
+/** Historial de apuestas por rango de fechas */
+export function useBetHistory(startDate: string, endDate: string) {
+  return useQuery({
+    queryKey: ["bets", "history", startDate, endDate],
+    queryFn: () => fetchBetHistory(startDate, endDate),
+    enabled: !!startDate && !!endDate,
   });
 }

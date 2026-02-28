@@ -2,6 +2,7 @@ import { httpClient } from "@/shared/lib/http-client";
 import type {
   Bet,
   BetCategory,
+  BetHistoryResponse,
   BetStatus,
   ChangeBetStatusRequest,
   CreateBetRequest,
@@ -64,5 +65,17 @@ export async function fetchDailyBalance(date?: string): Promise<DailyBalance> {
 
 export async function fetchTotalBalance(): Promise<TotalBalance> {
   const response = await httpClient.get<TotalBalance>("/bets/balance/total/");
+  return response.data;
+}
+
+// ─── Historial ──────────────────────────────────────────
+
+export async function fetchBetHistory(
+  startDate: string,
+  endDate: string,
+): Promise<BetHistoryResponse> {
+  const response = await httpClient.get<BetHistoryResponse>("/bets/history/", {
+    params: { start_date: startDate, end_date: endDate },
+  });
   return response.data;
 }

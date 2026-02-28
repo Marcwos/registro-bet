@@ -88,3 +88,23 @@ export interface TotalBalance {
   void_count: number;
   pending_count: number;
 }
+
+// ─── Historial ──────────────────────────────────────────
+export interface BetHistorySummary {
+  start_date: string;
+  end_date: string;
+  total_staked: string;
+  total_won: string;
+  total_lost: string;
+  net_profit: string;
+  bet_count: number;
+  won_count: number;
+  lost_count: number;
+  void_count: number;
+  pending_count: number;
+}
+
+export interface BetHistoryResponse {
+  summary: BetHistorySummary;
+  bets: Bet[];
+}
