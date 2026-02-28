@@ -33,3 +33,7 @@ class BetRepository(ABC):
     @abstractmethod
     def get_by_user_date_range(self, user_id: UUID, start_date: date, end_date: date) -> list[Bet]:
         """Obtener apuestas de un usuario en un rango de fechas"""
+
+    @abstractmethod
+    def count_all(self) -> int:
+        """Contar total de apuestas"""

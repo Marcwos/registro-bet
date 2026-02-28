@@ -6,6 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from src.apps.audit.infrastructure.repositories.django_audit_log_repository import DjangoAuditLogRepository
+from src.apps.audit.infrastructure.services.default_audit_service import DefaultAuditService
+
 from ...application.use_cases.change_bet_status import ChangeStatus
 from ...application.use_cases.create_bet import CreateBet
 from ...application.use_cases.delete_bet import DeleteBet
@@ -185,9 +188,10 @@ class BetDetailView(APIView):
     def delete(self, request, bet_id):
         user_id = UUID(str(request.user.id))
         repository = DjangoBetRepository()
+        audit_service = DefaultAuditService(DjangoAuditLogRepository())
 
         try:
-            use_case = DeleteBet(repository)
+            use_case = DeleteBet(repository, audit_service=audit_service)
             use_case.execute(bet_id=bet_id, user_id=user_id)
         except BetNotFoundException as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

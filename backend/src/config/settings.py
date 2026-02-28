@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # Local Apps (Features)
     "src.apps.users",
     "src.apps.bets",
+    "src.apps.audit",
 ]
 
 REST_FRAMEWORK = {

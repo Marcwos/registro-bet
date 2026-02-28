@@ -1,6 +1,8 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
+from src.apps.audit.domain.services.audit_service import AuditService
+
 from ...domain.entities.user import User
 from ...domain.exceptions import UserAlreadyExistsException
 from ...domain.repositories.user_repository import UserRepository
@@ -11,9 +13,15 @@ from ...domain.value_objects.user_id import UserId
 
 
 class RegisterUser:
-    def __init__(self, user_repository: UserRepository, password_hasher: PasswordHasher):
+    def __init__(
+        self,
+        user_repository: UserRepository,
+        password_hasher: PasswordHasher,
+        audit_service: AuditService | None = None,
+    ):
         self.user_repository = user_repository
         self.password_hasher = password_hasher
+        self.audit_service = audit_service
 
     def execute(self, email: str, password: str) -> User:
         email_vo = Email(email)
@@ -32,5 +40,14 @@ class RegisterUser:
         )
 
         self.user_repository.save(user)
+
+        if self.audit_service:
+            self.audit_service.log(
+                user_id=user.id.value,
+                action="user_registered",
+                entity_type="user",
+                entity_id=user.id.value,
+                metadata={"email": email},
+            )
 
         return user

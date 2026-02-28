@@ -22,3 +22,7 @@ class UserRepository(ABC):
     @abstractmethod
     def exists_by_email(self, email: Email) -> bool:
         pass
+
+    @abstractmethod
+    def count_all(self) -> int:
+        """Contar total de usuarios"""

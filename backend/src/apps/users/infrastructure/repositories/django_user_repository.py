@@ -40,3 +40,6 @@ class DjangoUserRepository(UserRepository):
 
     def exists_by_email(self, email: Email) -> bool:
         return UserModel.objects.filter(email=email.value).exists()
+
+    def count_all(self) -> int:
+        return UserModel.objects.count()

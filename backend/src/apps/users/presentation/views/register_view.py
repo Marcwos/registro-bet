@@ -3,6 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from src.apps.audit.infrastructure.repositories.django_audit_log_repository import DjangoAuditLogRepository
+from src.apps.audit.infrastructure.services.default_audit_service import DefaultAuditService
+
 from ...application.uses_cases.register_user import RegisterUser
 from ...domain.exceptions import UserAlreadyExistsException
 from ...infrastructure.repositories.django_user_repository import DjangoUserRepository
@@ -42,10 +45,11 @@ class RegisterView(APIView):
         # 2. Inyectar dependencias
         repository = DjangoUserRepository()
         hasher = BcryptPasswordHasher()
+        audit_service = DefaultAuditService(DjangoAuditLogRepository())
 
         try:
             # 3. Ejecutar use case
-            use_case = RegisterUser(repository, hasher)
+            use_case = RegisterUser(repository, hasher, audit_service=audit_service)
             user = use_case.execute(
                 email=serializer.validated_data["email"],
                 password=serializer.validated_data["password"],

@@ -4,6 +4,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from src.apps.audit.infrastructure.repositories.django_audit_log_repository import DjangoAuditLogRepository
+from src.apps.audit.infrastructure.services.default_audit_service import DefaultAuditService
+
 from ...application.uses_cases.change_password import ChangePassword
 from ...domain.exceptions import InvalidPasswordException, UserNotFoundException
 from ...infrastructure.repositories.django_auth_session_repository import DjangoAuthSessionRepository
@@ -34,6 +37,7 @@ class ChangePasswordView(APIView):
             user_repository=DjangoUserRepository(),
             session_repository=DjangoAuthSessionRepository(),
             password_hasher=BcryptPasswordHasher(),
+            audit_service=DefaultAuditService(DjangoAuditLogRepository()),
         )
         try:
             use_case.execute(

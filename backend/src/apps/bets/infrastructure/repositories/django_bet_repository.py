@@ -65,3 +65,6 @@ class DjangoBetRepository(BetRepository):
             placed_at__date__lte=end_date,
         ).order_by("-placed_at")
         return [BetMapper.to_domain(m) for m in models]
+
+    def count_all(self) -> int:
+        return BetModel.objects.count()

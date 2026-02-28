@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
+from src.apps.audit.domain.services.audit_service import AuditService
+
 from ...domain.entities.auth_session import AuthSession
 from ...domain.exceptions import EmailNotVerifiedException, InvalidCredentialsException
 from ...domain.repositories.auth_session_repository import AuthSessionRepository
@@ -28,11 +30,13 @@ class LoginUser:
         session_repository: AuthSessionRepository,
         password_hasher: PasswordHasher,
         token_provider: TokenProvider,
+        audit_service: AuditService | None = None,
     ):
         self.user_repository = user_repository
         self.session_repository = session_repository
         self.password_hasher = password_hasher
         self.token_provider = token_provider
+        self.audit_service = audit_service
 
     def execute(self, email: str, password: str, user_agent: str = "", ip_address: str = "") -> LoginResult:
         # 1. Buscar Usuario
@@ -71,6 +75,16 @@ class LoginUser:
             user_id=user.id.value,
             role=user.role.value,
         )
+
+        if self.audit_service:
+            self.audit_service.log(
+                user_id=user.id.value,
+                action="user_logged_in",
+                entity_type="user",
+                entity_id=user.id.value,
+                metadata={"email": email},
+                ip_address=ip_address,
+            )
 
         return LoginResult(
             access_token=access_token,

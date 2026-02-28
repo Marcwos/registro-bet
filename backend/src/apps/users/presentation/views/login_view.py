@@ -3,6 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from src.apps.audit.infrastructure.repositories.django_audit_log_repository import DjangoAuditLogRepository
+from src.apps.audit.infrastructure.services.default_audit_service import DefaultAuditService
+
 from ...application.uses_cases.login_user import LoginUser
 from ...domain.exceptions import EmailNotVerifiedException, InvalidCredentialsException
 from ...infrastructure.repositories.django_auth_session_repository import DjangoAuthSessionRepository
@@ -31,6 +34,7 @@ class LoginView(APIView):
             session_repository=DjangoAuthSessionRepository(),
             password_hasher=BcryptPasswordHasher(),
             token_provider=JwtTokenProvider(),
+            audit_service=DefaultAuditService(DjangoAuditLogRepository()),
         )
 
         try:
