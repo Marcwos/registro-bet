@@ -11,7 +11,7 @@ class JwtUser:
     def __init__(self, user_id: str, role: str):
         self.id = user_id
         self.role = role
-        self.is_athenticated = True
+        self.is_authenticated = True
 
 
 class JwtAuthentication(BaseAuthentication):
