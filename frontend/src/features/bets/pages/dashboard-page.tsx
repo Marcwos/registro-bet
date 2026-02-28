@@ -113,18 +113,21 @@ export function DashboardPage() {
           value={formatMoney(netProfit)}
           icon={TrendingUp}
           trend={getTrend(netProfit)}
+          index={0}
         />
         <StatCard
           label="Resultado de hoy"
           value={formatMoney(dailyNet)}
           icon={TrendingDown}
           trend={getTrend(dailyNet)}
+          index={1}
         />
         <StatCard
           label="Total apostado"
           value={`$${totalStaked.toFixed(2)}`}
           icon={DollarSign}
           trend="neutral"
+          index={2}
         />
       </div>
 

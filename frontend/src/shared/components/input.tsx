@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes } from "react";
+import { forwardRef, useId, type InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -10,22 +10,35 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
  * Usa forwardRef para que react-hook-form pueda conectar su ref al input del DOM.
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, className = "", ...props }, ref) => {
+  ({ label, error, className = "", id: externalId, ...props }, ref) => {
+    const generatedId = useId();
+    const inputId = externalId ?? generatedId;
+
     return (
       <div className="space-y-1.5">
         {label && (
-          <label className="block text-sm font-medium text-slate-700">
+          <label
+            htmlFor={inputId}
+            className="block text-sm font-medium text-slate-700"
+          >
             {label}
           </label>
         )}
         <input
           ref={ref}
+          id={inputId}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${inputId}-error` : undefined}
           className={`w-full rounded-lg border px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             error ? "border-rose-500 focus:ring-rose-500" : "border-slate-300"
           } ${className}`}
           {...props}
         />
-        {error && <p className="text-sm text-rose-600">{error}</p>}
+        {error && (
+          <p id={`${inputId}-error`} className="text-sm text-rose-600">
+            {error}
+          </p>
+        )}
       </div>
     );
   },
