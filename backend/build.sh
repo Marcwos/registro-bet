@@ -13,3 +13,6 @@ python manage.py collectstatic --no-input
 
 # Ejecutar migraciones
 python manage.py migrate
+
+# Cargar estados de apuesta por defecto
+python manage.py seed_bet_statuses
