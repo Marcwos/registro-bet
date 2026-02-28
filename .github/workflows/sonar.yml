@@ -10,6 +10,32 @@ jobs:
   sonarcloud:
     runs-on: ubuntu-latest
 
+    # ─── PostgreSQL para tests de integración ─────────────────
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: test_registro_bet
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    # ─── Variables de entorno para Django ──────────────────────
+    env:
+      SECRET_KEY: test-secret-key-only-for-ci
+      DEBUG: "True"
+      POSTGRES_DB: test_registro_bet
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: "5432"
+
     steps:
       # 1. Clonar el repositorio
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -29,10 +55,10 @@ jobs:
         working-directory: backend
         run: uv sync
 
-      # 5. Ejecutar tests + generar coverage.xml
+      # 5. Ejecutar TODOS los tests + generar coverage.xml
       - name: Run tests with coverage
         working-directory: backend
-        run: uv run pytest src/apps/users/tests/ --cov --cov-report=xml:coverage.xml
+        run: uv run pytest --cov --cov-report=xml:coverage.xml
 
       # 6. Ejecutar SonarCloud Scanner
       - uses: SonarSource/sonarqube-scan-action@v5
