@@ -22,7 +22,7 @@ def _create_bet(client, **overrides):
     payload = {
         "stake_amount": "10.00",
         "odds": "2.50",
-        "profit_expected": "15.00",
+        "profit_expected": "25.00",
     }
     payload.update(overrides)
     return client.post("/api/bets/", payload, format="json")
@@ -49,9 +49,9 @@ class TestDailyBalanceIntegration:
         today = date.today().isoformat()
 
         # Crear 2 apuestas y resolver una como ganada
-        r1 = _create_bet(client, stake_amount="10.00", odds="2.00", profit_expected="10.00")
-        r2 = _create_bet(client, stake_amount="20.00", odds="3.00", profit_expected="40.00")
-        _change_status(client, r1.data["id"], "won", profit_final="10.00")
+        r1 = _create_bet(client, stake_amount="10.00", odds="2.00", profit_expected="20.00")
+        r2 = _create_bet(client, stake_amount="20.00", odds="3.00", profit_expected="60.00")
+        _change_status(client, r1.data["id"], "won", profit_final="20.00")
         _change_status(client, r2.data["id"], "lost")
 
         response = client.get(f"/api/bets/balance/daily/?date={today}", format="json")
@@ -63,6 +63,7 @@ class TestDailyBalanceIntegration:
         assert data["lost_count"] == 1
         assert float(data["total_staked"]) == 30.00
         assert float(data["total_won"]) > 0
+        assert float(data["total_return"]) == 20.00  # 10*2.00
         assert float(data["total_lost"]) == 20.00
 
 
@@ -78,9 +79,9 @@ class TestTotalBalanceIntegration:
         client, _, _ = authenticated_client
 
         # Crear apuestas y resolver
-        r1 = _create_bet(client, stake_amount="50.00", odds="2.00", profit_expected="50.00")
-        r2 = _create_bet(client, stake_amount="30.00", odds="1.50", profit_expected="15.00")
-        _change_status(client, r1.data["id"], "won", profit_final="50.00")
+        r1 = _create_bet(client, stake_amount="50.00", odds="2.00", profit_expected="100.00")
+        r2 = _create_bet(client, stake_amount="30.00", odds="1.50", profit_expected="45.00")
+        _change_status(client, r1.data["id"], "won", profit_final="100.00")
         _change_status(client, r2.data["id"], "lost")
 
         response = client.get("/api/bets/balance/total/", format="json")
@@ -91,6 +92,7 @@ class TestTotalBalanceIntegration:
         assert data["won_count"] == 1
         assert data["lost_count"] == 1
         assert float(data["total_staked"]) == 80.00
+        assert float(data["total_return"]) == 100.00  # 50*2.00
         assert float(data["total_lost"]) == 30.00
 
 
@@ -107,8 +109,8 @@ class TestBetHistoryIntegration:
         today = date.today().isoformat()
 
         # Crear apuestas
-        _create_bet(client, stake_amount="10.00", odds="2.00", profit_expected="10.00")
-        _create_bet(client, stake_amount="20.00", odds="1.80", profit_expected="16.00")
+        _create_bet(client, stake_amount="10.00", odds="2.00", profit_expected="20.00")
+        _create_bet(client, stake_amount="20.00", odds="1.80", profit_expected="36.00")
 
         response = client.get(
             f"/api/bets/history/?start_date={today}&end_date={today}",

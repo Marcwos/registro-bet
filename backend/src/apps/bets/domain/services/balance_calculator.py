@@ -8,8 +8,10 @@ from ...domain.entities.bet_status import BetStatus
 class BalanceCalculator:
     """Servicio de dominio: calcula balances desde datos reales
 
+    Para apuestas ganadas, usa el valor real registrado:
+      profit_final > profit_expected > stake * odds (fallback teórico)
     profit_real por apuesta:
-      - ganada: stake * (odds - 1)
+      - ganada: retorno_real - stake
       - perdida: -stake
       - nula/pendiente: 0
     """
@@ -26,6 +28,7 @@ class BalanceCalculator:
         total_staked = Decimal("0.00")
         total_won = Decimal("0.00")
         total_lost = Decimal("0.00")
+        total_return = Decimal("0.00")
         won_count = 0
         lost_count = 0
         void_count = 0
@@ -43,9 +46,15 @@ class BalanceCalculator:
 
             if code == "won":
                 won_count += 1
-                # ganada -> profit_real = stake * (odds - 1)
-                profit_real = (bet.stake_amount.amount * (bet.odds.value - Decimal("1"))).quantize(Decimal("0.01"))
-                total_won += profit_real
+                # Retorno real: profit_final > profit_expected > cálculo teórico
+                if bet.profit_final is not None:
+                    return_amount = bet.profit_final
+                elif bet.profit_expected is not None:
+                    return_amount = bet.profit_expected
+                else:
+                    return_amount = (bet.stake_amount.amount * bet.odds.value).quantize(Decimal("0.01"))
+                total_return += return_amount
+                total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
             elif code == "lost":
                 lost_count += 1
                 # perdida -> profit_real = -stake
@@ -62,6 +71,7 @@ class BalanceCalculator:
             "total_staked": total_staked,
             "total_won": total_won,
             "total_lost": total_lost,
+            "total_return": total_return,
             "net_profit": net_profit,
             "bet_count": len(bets),
             "won_count": won_count,

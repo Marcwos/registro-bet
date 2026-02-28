@@ -27,13 +27,15 @@ def _make_status(code, is_final):
 
 def _make_bet(status_id, stake="10.00", profit_final=None):
     now = datetime.now(UTC)
+    stake_dec = Decimal(stake)
+    odds_dec = Decimal("2.00")
     return Bet(
         id=uuid4(),
         user_id=uuid4(),
         title="Test",
-        stake_amount=Money(amount=Decimal(stake)),
-        odds=Odds(value=Decimal("2.00")),
-        profit_expected=Decimal(stake),
+        stake_amount=Money(amount=stake_dec),
+        odds=Odds(value=odds_dec),
+        profit_expected=(stake_dec * odds_dec).quantize(Decimal("0.01")),
         profit_final=Decimal(profit_final) if profit_final else None,
         status_id=status_id,
         sport_id=None,
@@ -63,7 +65,7 @@ class TestGetDailyBalance:
         target = date(2026, 2, 21)
 
         self.bet_repo.get_by_user_and_date.return_value = [
-            _make_bet(self.won.id, stake="10.00", profit_final="15.00"),
+            _make_bet(self.won.id, stake="10.00", profit_final="20.00"),
             _make_bet(self.lost.id, stake="8.00"),
             _make_bet(self.pending.id, stake="5.00"),
         ]
@@ -72,6 +74,7 @@ class TestGetDailyBalance:
 
         assert result.tarjet_date == target
         assert result.total_won == Decimal("10.00")
+        assert result.total_return == Decimal("20.00")  # 10*2
         assert result.total_lost == Decimal("8.00")
         assert result.net_profit == Decimal("2.00")
         assert result.bet_count == 3
@@ -91,12 +94,13 @@ class TestGetDailyBalance:
         assert result.total_staked == Decimal("0.00")
         assert result.total_won == Decimal("0.00")
         assert result.total_lost == Decimal("0.00")
+        assert result.total_return == Decimal("0.00")
 
     def test_daily_balance_only_wins(self):
         """Balance de un día con solo apuestas ganadas."""
         self.bet_repo.get_by_user_and_date.return_value = [
             _make_bet(self.won.id, stake="10.00", profit_final="20.00"),
-            _make_bet(self.won.id, stake="5.00", profit_final="8.00"),
+            _make_bet(self.won.id, stake="5.00", profit_final="10.00"),
         ]
 
         result = self.use_case.execute(user_id=uuid4(), tarjet_date=date(2026, 2, 21))
@@ -104,6 +108,7 @@ class TestGetDailyBalance:
         # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake
         # 10 + 5 = 15
         assert result.total_won == Decimal("15.00")
+        assert result.total_return == Decimal("30.00")  # (10+5)*2
         assert result.total_lost == Decimal("0.00")
         assert result.net_profit == Decimal("15.00")
         assert result.won_count == 2
@@ -118,6 +123,7 @@ class TestGetDailyBalance:
         result = self.use_case.execute(user_id=uuid4(), tarjet_date=date(2026, 2, 21))
 
         assert result.total_won == Decimal("0.00")
+        assert result.total_return == Decimal("0.00")
         assert result.total_lost == Decimal("25.00")
         assert result.net_profit == Decimal("-25.00")
         assert result.lost_count == 2

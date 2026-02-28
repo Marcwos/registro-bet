@@ -11,6 +11,7 @@ class DailyBalance:
     total_staked: Decimal
     total_won: Decimal
     total_lost: Decimal
+    total_return: Decimal
     net_profit: Decimal
     bet_count: Decimal
     won_count: int
@@ -26,6 +27,7 @@ class TotalBalance:
     total_staked: Decimal
     total_won: Decimal
     total_lost: Decimal
+    total_return: Decimal
     net_profit: Decimal
     bet_count: int
     won_count: int
@@ -43,6 +45,7 @@ class BetHistorySummay:
     total_staked: Decimal
     total_won: Decimal
     total_lost: Decimal
+    total_return: Decimal
     net_profit: Decimal
     bet_count: int
     won_count: int

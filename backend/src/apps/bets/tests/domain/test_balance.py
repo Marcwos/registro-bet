@@ -26,6 +26,7 @@ class TestDailyBalance:
             total_staked=Decimal("100.00"),
             total_won=Decimal("50.00"),
             total_lost=Decimal("30.00"),
+            total_return=Decimal("80.00"),
             net_profit=Decimal("20.00"),
             bet_count=5,
             won_count=2,
@@ -38,6 +39,7 @@ class TestDailyBalance:
         assert balance.total_staked == Decimal("100.00")
         assert balance.total_won == Decimal("50.00")
         assert balance.total_lost == Decimal("30.00")
+        assert balance.total_return == Decimal("80.00")
         assert balance.net_profit == Decimal("20.00")
         assert balance.bet_count == 5
         assert balance.won_count == 2
@@ -52,6 +54,7 @@ class TestDailyBalance:
             total_staked=Decimal("0"),
             total_won=Decimal("0"),
             total_lost=Decimal("0"),
+            total_return=Decimal("0"),
             net_profit=Decimal("0"),
             bet_count=0,
             won_count=0,
@@ -69,6 +72,7 @@ class TestDailyBalance:
             total_staked=Decimal("0.00"),
             total_won=Decimal("0.00"),
             total_lost=Decimal("0.00"),
+            total_return=Decimal("0.00"),
             net_profit=Decimal("0.00"),
             bet_count=0,
             won_count=0,
@@ -88,6 +92,7 @@ class TestTotalBalance:
             total_staked=Decimal("500.00"),
             total_won=Decimal("200.00"),
             total_lost=Decimal("150.00"),
+            total_return=Decimal("350.00"),
             net_profit=Decimal("50.00"),
             bet_count=20,
             won_count=8,
@@ -99,6 +104,7 @@ class TestTotalBalance:
         assert balance.total_staked == Decimal("500.00")
         assert balance.total_won == Decimal("200.00")
         assert balance.total_lost == Decimal("150.00")
+        assert balance.total_return == Decimal("350.00")
         assert balance.net_profit == Decimal("50.00")
         assert balance.bet_count == 20
         assert balance.won_count == 8
@@ -109,6 +115,7 @@ class TestTotalBalance:
             total_staked=Decimal("0"),
             total_won=Decimal("0"),
             total_lost=Decimal("0"),
+            total_return=Decimal("0"),
             net_profit=Decimal("0"),
             bet_count=0,
             won_count=0,
@@ -129,6 +136,7 @@ class TestBetHistorySummary:
             total_staked=Decimal("300.00"),
             total_won=Decimal("100.00"),
             total_lost=Decimal("80.00"),
+            total_return=Decimal("180.00"),
             net_profit=Decimal("20.00"),
             bet_count=15,
             won_count=5,
@@ -151,6 +159,7 @@ class TestBetHistorySummary:
             total_staked=Decimal("0"),
             total_won=Decimal("0"),
             total_lost=Decimal("0"),
+            total_return=Decimal("0"),
             net_profit=Decimal("0"),
             bet_count=0,
             won_count=0,

@@ -28,13 +28,15 @@ def _make_status(code, is_final):
 
 def _make_bet(status_id, stake="10.00", profit_final=None):
     now = datetime.now(UTC)
+    stake_dec = Decimal(stake)
+    odds_dec = Decimal("2.00")
     return Bet(
         id=uuid4(),
         user_id=uuid4(),
         title="Test",
-        stake_amount=Money(amount=Decimal(stake)),
-        odds=Odds(value=Decimal("2.00")),
-        profit_expected=Decimal(stake),
+        stake_amount=Money(amount=stake_dec),
+        odds=Odds(value=odds_dec),
+        profit_expected=(stake_dec * odds_dec).quantize(Decimal("0.01")),
         profit_final=Decimal(profit_final) if profit_final else None,
         status_id=status_id,
         sport_id=None,
@@ -65,7 +67,7 @@ class TestGetBetHistory:
         end = date(2026, 2, 21)
 
         mock_bets = [
-            _make_bet(self.won.id, stake="10.00", profit_final="15.00"),
+            _make_bet(self.won.id, stake="10.00", profit_final="20.00"),
             _make_bet(self.lost.id, stake="5.00"),
         ]
         self.bet_repo.get_by_user_date_range.return_value = mock_bets
@@ -75,7 +77,7 @@ class TestGetBetHistory:
         assert len(bets) == 2
         assert summary.start_date == start
         assert summary.end_date == end
-        # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake = 10
+        # return=profit_final=20, profit = 20 - 10 = 10
         assert summary.total_won == Decimal("10.00")
         assert summary.total_lost == Decimal("5.00")
         assert summary.net_profit == Decimal("5.00")

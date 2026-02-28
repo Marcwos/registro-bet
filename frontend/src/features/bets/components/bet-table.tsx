@@ -96,9 +96,37 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
     statuses.find((s) => s.id === bet.status_id)?.code ?? "pending";
   const isFinal = statuses.find((s) => s.id === bet.status_id)?.is_final ?? false;
 
-  // Ganancia a mostrar: si esta resuelta usa profit_final, si no profit_expected
-  const displayProfit = bet.profit_final ?? bet.profit_expected;
-  const profitSign = Number(displayProfit) >= 0 ? "+" : "";
+  // ─── Ganancia segun estado ──────────────────────────────
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipTimeout = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const profitExpected = Number(bet.profit_expected);
+
+  // Determinar texto, color y tooltip segun estado
+  let profitText: string;
+  let profitClass: string;
+  let tooltipText: string | null = null;
+
+  if (statusCode === "lost") {
+    profitText = "$0.00";
+    profitClass = "text-rose-600";
+    tooltipText = `+$${profitExpected.toFixed(2)}`;
+  } else if (statusCode === "void") {
+    profitText = `$${Number(bet.stake_amount).toFixed(2)}`;
+    profitClass = "text-slate-400";
+  } else {
+    // pending o won: mostrar ganancia esperada en verde
+    profitText = `+$${profitExpected.toFixed(2)}`;
+    profitClass = "text-emerald-600";
+  }
+
+  const handleTooltipEnter = () => {
+    if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current);
+    setShowTooltip(true);
+  };
+  const handleTooltipLeave = () => {
+    tooltipTimeout.current = setTimeout(() => setShowTooltip(false), 150);
+  };
 
   return (
     <tr className="transition-colors hover:bg-slate-50">
@@ -118,8 +146,25 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
       <td className="px-4 py-3 text-right text-sm text-slate-700">
         {Number(bet.odds).toFixed(2)}
       </td>
-      <td className={`px-4 py-3 text-right text-sm font-medium ${Number(displayProfit) >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
-        {profitSign}${Math.abs(Number(displayProfit)).toFixed(2)}
+      <td className={`px-4 py-3 text-right text-sm font-medium ${profitClass}`}>
+        {tooltipText ? (
+          <span
+            className="relative cursor-pointer"
+            onMouseEnter={handleTooltipEnter}
+            onMouseLeave={handleTooltipLeave}
+            onTouchStart={handleTooltipEnter}
+            onTouchEnd={handleTooltipLeave}
+          >
+            {profitText}
+            {showTooltip && (
+              <span className="absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-white shadow-lg after:absolute after:top-full after:right-3 after:border-4 after:border-transparent after:border-t-slate-800">
+                Pudiste ganar {tooltipText}
+              </span>
+            )}
+          </span>
+        ) : (
+          profitText
+        )}
       </td>
       <td className="px-4 py-3 text-center">
         <StatusBadge code={statusCode} />

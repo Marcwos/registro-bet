@@ -69,6 +69,7 @@ export interface DailyBalance {
   total_staked: string;
   total_won: string;
   total_lost: string;
+  total_return: string;
   net_profit: string;
   bet_count: number;
   won_count: number;
@@ -81,6 +82,7 @@ export interface TotalBalance {
   total_staked: string;
   total_won: string;
   total_lost: string;
+  total_return: string;
   net_profit: string;
   bet_count: number;
   won_count: number;
@@ -96,6 +98,7 @@ export interface BetHistorySummary {
   total_staked: string;
   total_won: string;
   total_lost: string;
+  total_return: string;
   net_profit: string;
   bet_count: number;
   won_count: number;

@@ -36,11 +36,13 @@ export function DashboardPage() {
   const [deletingBet, setDeletingBet] = useState<Bet | null>(null);
   const [createError, setCreateError] = useState("");
   const [editError, setEditError] = useState("");
+  const [formKey, setFormKey] = useState(0);
 
   // ─── Handlers ─────────────────────────────────────────
   const handleCreate = (data: Parameters<typeof createBet.mutate>[0]) => {
     setCreateError("");
     createBet.mutate(data, {
+      onSuccess: () => setFormKey((k) => k + 1),
       onError: (err) => setCreateError(getApiErrorMessage(err)),
     });
   };
@@ -78,8 +80,8 @@ export function DashboardPage() {
   };
 
   // ─── Stats helpers ────────────────────────────────────
-  const netProfit = Number(totalBalance?.net_profit ?? 0);
-  const dailyNet = Number(dailyBalance?.net_profit ?? 0);
+  const totalWon = Number(totalBalance?.total_won ?? 0);
+  const dailyReturn = Number(dailyBalance?.total_return ?? 0);
   const totalStaked = Number(totalBalance?.total_staked ?? 0);
 
   const formatMoney = (value: number) => {
@@ -110,16 +112,16 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <StatCard
           label="Ganancia neta total"
-          value={formatMoney(netProfit)}
+          value={formatMoney(totalWon)}
           icon={TrendingUp}
-          trend={getTrend(netProfit)}
+          trend={getTrend(totalWon)}
           index={0}
         />
         <StatCard
-          label="Resultado de hoy"
-          value={formatMoney(dailyNet)}
+          label="Retorno total"
+          value={formatMoney(dailyReturn)}
           icon={TrendingDown}
-          trend={getTrend(dailyNet)}
+          trend={getTrend(dailyReturn)}
           index={1}
         />
         <StatCard
@@ -140,6 +142,7 @@ export function DashboardPage() {
               Nueva apuesta
             </h2>
             <BetForm
+              key={formKey}
               onSubmit={handleCreate}
               isLoading={createBet.isPending}
               error={createError}

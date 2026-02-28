@@ -27,13 +27,15 @@ def _make_status(code, is_final):
 
 def _make_bet(status_id, stake="10.00", profit_final=None):
     now = datetime.now(UTC)
+    stake_dec = Decimal(stake)
+    odds_dec = Decimal("2.00")
     return Bet(
         id=uuid4(),
         user_id=uuid4(),
         title="Test",
-        stake_amount=Money(amount=Decimal(stake)),
-        odds=Odds(value=Decimal("2.00")),
-        profit_expected=Decimal(stake),
+        stake_amount=Money(amount=stake_dec),
+        odds=Odds(value=odds_dec),
+        profit_expected=(stake_dec * odds_dec).quantize(Decimal("0.01")),
         profit_final=Decimal(profit_final) if profit_final else None,
         status_id=status_id,
         sport_id=None,
@@ -68,7 +70,7 @@ class TestGetTotalBalance:
         user_id = uuid4()
 
         self.bet_repo.get_by_user.return_value = [
-            _make_bet(self.won.id, stake="10.00", profit_final="15.00"),
+            _make_bet(self.won.id, stake="10.00", profit_final="20.00"),
             _make_bet(self.won.id, stake="20.00", profit_final="40.00"),
             _make_bet(self.lost.id, stake="15.00"),
             _make_bet(self.void.id, stake="5.00"),
@@ -76,9 +78,10 @@ class TestGetTotalBalance:
 
         result = self.use_case.execute(user_id=user_id)
 
-        # odds=2.00 -> profit_real = stake * (2.00 - 1) = stake
-        # won: 10 + 20 = 30
+        # return=profit_final, profit = return - stake
+        # won: (20-10) + (40-20) = 30
         assert result.total_won == Decimal("30.00")
+        assert result.total_return == Decimal("60.00")  # 10*2 + 20*2
         assert result.total_lost == Decimal("15.00")
         assert result.net_profit == Decimal("15.00")
         assert result.total_staked == Decimal("50.00")
@@ -99,6 +102,7 @@ class TestGetTotalBalance:
         assert result.total_staked == Decimal("0.00")
         assert result.total_won == Decimal("0.00")
         assert result.total_lost == Decimal("0.00")
+        assert result.total_return == Decimal("0.00")
 
     def test_total_balance_all_lost(self):
         """Balance total negativo cuando todas son perdidas."""
@@ -112,6 +116,7 @@ class TestGetTotalBalance:
 
         assert result.total_lost == Decimal("35.00")
         assert result.total_won == Decimal("0.00")
+        assert result.total_return == Decimal("0.00")
         assert result.net_profit == Decimal("-35.00")
         assert result.lost_count == 3
 
@@ -126,4 +131,5 @@ class TestGetTotalBalance:
         assert result.bet_count == 1
         assert result.pending_count == 1
         assert result.net_profit == Decimal("0.00")
+        assert result.total_return == Decimal("0.00")
         assert result.total_staked == Decimal("50.00")
