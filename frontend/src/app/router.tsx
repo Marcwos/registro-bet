@@ -3,14 +3,14 @@ import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
 import { AuthLayout } from "@/shared/layouts/auth-layout";
 import { DashboardLayout } from "@/shared/layouts/dashboard-layout";
 
+// --- Paginas de auth ---
+import { LoginPage } from "@/features/auth/pages/login-page";
+import { RegisterPage } from "@/features/auth/pages/register-page";
+import { VerifyEmailPage } from "@/features/auth/pages/verify-email-page";
+import { ForgotPasswordPage } from "@/features/auth/pages/forgot-password-page";
+import { ResetPasswordPage } from "@/features/auth/pages/reset-password-page";
 
-function LoginPage() {
-  return <h1 className="text-2xl font-bold">Login</h1>;
-}
-
-function RegisterPage() {
-  return <h1 className="text-2xl font-bold">Register</h1>;
-}
+// --- Paginas placeholder (Sprint F3/F4/F5) ---
 
 function DashboardPage() {
   return <h1 className="text-2xl font-bold">Dashboard</h1>;
@@ -68,6 +68,9 @@ export function AppRouter() {
         >
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
 
         {/* Rutas protegidas: dashboard, historial, settings (con Sidebar) */}
