@@ -112,13 +112,27 @@ export function HistoryPage() {
     setAppliedEnd(endDate);
   };
 
-  const handleEdit = (data: Parameters<typeof updateBet.mutate>[0]["data"]) => {
+  const handleEdit = (data: Parameters<typeof updateBet.mutate>[0]["data"] & { status_code?: string }) => {
     if (!editBet) return;
     setEditError("");
+    const { status_code, ...betData } = data;
+
+    const currentCode = statuses.find((s) => s.id === editBet.status_id)?.code;
+    const isFinal = statuses.find((s) => s.id === editBet.status_id)?.is_final ?? false;
+
     updateBet.mutate(
-      { id: editBet.id, data },
+      { id: editBet.id, data: { ...betData, confirm: isFinal } },
       {
-        onSuccess: () => setEditBet(null),
+        onSuccess: () => {
+          if (status_code && status_code !== currentCode) {
+            changeBetStatus.mutate(
+              { id: editBet.id, data: { status_code } },
+              { onSuccess: () => setEditBet(null) },
+            );
+          } else {
+            setEditBet(null);
+          }
+        },
         onError: (err) => setEditError(getApiErrorMessage(err)),
       },
     );
@@ -315,9 +329,11 @@ export function HistoryPage() {
         title="Editar apuesta"
       >
         <BetForm
+          key={editBet?.id}
           bet={editBet ?? undefined}
+          statuses={statuses}
           onSubmit={handleEdit}
-          isLoading={updateBet.isPending}
+          isLoading={updateBet.isPending || changeBetStatus.isPending}
           error={editError}
         />
       </Modal>

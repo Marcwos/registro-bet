@@ -19,9 +19,10 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 
 interface StatusBadgeProps {
   code: string;
+  onClick?: () => void;
 }
 
-export function StatusBadge({ code }: StatusBadgeProps) {
+export function StatusBadge({ code, onClick }: StatusBadgeProps) {
   const config = statusConfig[code] ?? {
     label: code,
     className: "bg-slate-100 text-slate-700",
@@ -29,7 +30,11 @@ export function StatusBadge({ code }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className}`}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") onClick(); } : undefined}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.className} ${onClick ? "cursor-pointer ring-offset-1 transition-all hover:ring-2 hover:ring-slate-300" : ""}`}
     >
       {config.label}
     </span>

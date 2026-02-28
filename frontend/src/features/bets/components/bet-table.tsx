@@ -1,4 +1,4 @@
-import { MoreHorizontal, Pencil, Trash2, RefreshCw } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { StatusBadge } from "./status-badge";
 import type { Bet, BetStatus } from "../types";
@@ -140,7 +140,7 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
           )}
           {/* Estado visible solo en mobile, debajo del titulo */}
           <div className="mt-1 md:hidden">
-            <StatusBadge code={statusCode} />
+            <StatusBadge code={statusCode} onClick={!isFinal ? () => onChangeStatus(bet) : undefined} />
           </div>
         </div>
       </td>
@@ -171,7 +171,7 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
         )}
       </td>
       <td className="hidden px-2 py-2 text-center md:table-cell md:px-4 md:py-3">
-        <StatusBadge code={statusCode} />
+        <StatusBadge code={statusCode} onClick={!isFinal ? () => onChangeStatus(bet) : undefined} />
       </td>
       <td className="px-1 py-2 text-right md:px-4 md:py-3">
         <div className="relative inline-block" ref={menuRef}>
@@ -184,15 +184,6 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
 
           {menuOpen && (
             <div className="absolute right-0 z-10 mt-1 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
-              {!isFinal && (
-                <button
-                  onClick={() => { onChangeStatus(bet); setMenuOpen(false); }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Cambiar estado
-                </button>
-              )}
               <button
                 onClick={() => { onEdit(bet); setMenuOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"

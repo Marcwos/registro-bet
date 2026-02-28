@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DollarSign, TrendingUp, TrendingDown } from "lucide-react";
+import { DollarSign, TrendingUp, Wallet } from "lucide-react";
 import { StatCard } from "../components/stat-card";
 import { BetForm } from "../components/bet-form";
 import { BetTable } from "../components/bet-table";
@@ -47,13 +47,27 @@ export function DashboardPage() {
     });
   };
 
-  const handleEdit = (data: Parameters<typeof createBet.mutate>[0]) => {
+  const handleEdit = (data: Parameters<typeof createBet.mutate>[0] & { status_code?: string }) => {
     if (!editBet) return;
     setEditError("");
+    const { status_code, ...betData } = data;
+
+    const currentCode = statuses.find((s) => s.id === editBet.status_id)?.code;
+    const isFinal = statuses.find((s) => s.id === editBet.status_id)?.is_final ?? false;
+
     updateBet.mutate(
-      { id: editBet.id, data },
+      { id: editBet.id, data: { ...betData, confirm: isFinal } },
       {
-        onSuccess: () => setEditBet(null),
+        onSuccess: () => {
+          if (status_code && status_code !== currentCode) {
+            changeBetStatus.mutate(
+              { id: editBet.id, data: { status_code } },
+              { onSuccess: () => setEditBet(null) },
+            );
+          } else {
+            setEditBet(null);
+          }
+        },
         onError: (err) => setEditError(getApiErrorMessage(err)),
       },
     );
@@ -121,7 +135,7 @@ export function DashboardPage() {
         <StatCard
           label="Retorno total"
           value={formatMoney(dailyReturn)}
-          icon={TrendingDown}
+          icon={Wallet}
           trend={getTrend(dailyReturn)}
           index={1}
         />
@@ -189,9 +203,11 @@ export function DashboardPage() {
         title="Editar apuesta"
       >
         <BetForm
+          key={editBet?.id}
           bet={editBet ?? undefined}
+          statuses={statuses}
           onSubmit={handleEdit}
-          isLoading={updateBet.isPending}
+          isLoading={updateBet.isPending || changeBetStatus.isPending}
           error={editError}
         />
       </Modal>

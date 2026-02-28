@@ -1,10 +1,18 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod/v4";
 import { Input } from "@/shared/components/input";
 import { Button } from "@/shared/components/button";
-import type { Bet } from "../types";
+import type { Bet, BetStatus } from "../types";
+
+// ─── Opciones de estado para el selector ────────────────
+const statusOptions = [
+  { code: "pending", label: "Pendiente", active: "bg-slate-600 text-white ring-2 ring-offset-2 ring-slate-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
+  { code: "won", label: "Ganada", active: "bg-emerald-600 text-white ring-2 ring-offset-2 ring-emerald-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
+  { code: "lost", label: "Perdida", active: "bg-rose-600 text-white ring-2 ring-offset-2 ring-rose-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
+  { code: "void", label: "Nula", active: "bg-gray-500 text-white ring-2 ring-offset-2 ring-gray-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
+];
 
 // ─── Schema de validacion ───────────────────────────────
 const betSchema = z.object({
@@ -27,20 +35,22 @@ type BetFormData = z.infer<typeof betSchema>;
 interface BetFormProps {
   /** Si se pasa, el formulario edita; si no, crea */
   bet?: Bet;
+  /** Catálogo de estados — si se pasa junto a bet, muestra selector de estado */
+  statuses?: BetStatus[];
   onSubmit: (data: {
     stake_amount: number;
     odds: number;
     profit_expected: number;
+    status_code?: string;
   }) => void;
   isLoading: boolean;
   error?: string;
 }
 
-export function BetForm({ bet, onSubmit, isLoading, error }: BetFormProps) {
+export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormProps) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<BetFormData>({
     resolver: zodResolver(betSchema),
@@ -51,28 +61,20 @@ export function BetForm({ bet, onSubmit, isLoading, error }: BetFormProps) {
     },
   });
 
-  // Resetear cuando cambie la apuesta (crear vs editar)
-  useEffect(() => {
-    if (bet) {
-      reset({
-        stake_amount: bet.stake_amount,
-        odds: bet.odds,
-        profit_expected: bet.profit_expected,
-      });
-    } else {
-      reset({
-        stake_amount: "",
-        odds: "",
-        profit_expected: "",
-      });
-    }
-  }, [bet, reset]);
+  // Estado seleccionado (solo en modo edicion) — se inicializa con key del padre
+  const currentStatusCode = bet && statuses
+    ? (statuses.find((s) => s.id === bet.status_id)?.code ?? "pending")
+    : null;
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(currentStatusCode);
 
   const handleFormSubmit = (data: BetFormData) => {
     onSubmit({
       stake_amount: Number(data.stake_amount),
       odds: Number(data.odds),
       profit_expected: Number(data.profit_expected),
+      ...(selectedStatus && selectedStatus !== currentStatusCode
+        ? { status_code: selectedStatus }
+        : {}),
     });
   };
 
@@ -116,6 +118,27 @@ export function BetForm({ bet, onSubmit, isLoading, error }: BetFormProps) {
         error={errors.profit_expected?.message}
         {...register("profit_expected")}
       />
+
+      {/* Selector de estado (solo en modo edicion) */}
+      {bet && statuses && (
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700">Estado</label>
+          <div className="grid grid-cols-4 gap-2">
+            {statusOptions.map((opt) => (
+              <button
+                key={opt.code}
+                type="button"
+                onClick={() => setSelectedStatus(opt.code)}
+                className={`rounded-lg px-2 py-2 text-xs font-medium transition-all sm:text-sm ${
+                  selectedStatus === opt.code ? opt.active : opt.idle
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Guardando..." : bet ? "Guardar cambios" : "Registrar apuesta"}
