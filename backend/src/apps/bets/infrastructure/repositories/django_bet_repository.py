@@ -55,7 +55,7 @@ class DjangoBetRepository(BetRepository):
         models = BetModel.objects.filter(
             user_id=user_id,
             placed_at__date=tarjet_date,
-        ).order_by["-placed_at"]
+        ).order_by("-placed_at")
         return [BetMapper.to_domain(m) for m in models]
 
     def get_by_user_date_range(self, user_id: UUID, start_date: date, end_date: date) -> list[Bet]:
