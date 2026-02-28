@@ -62,3 +62,36 @@ def authenticated_client(api_client, verified_user):
     login_data = response.data
     api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {login_data['access_token']}")
     return api_client, login_data, verified_user
+
+
+@pytest.fixture
+def admin_client():
+    """
+    Registra un usuario admin verificado y retorna (client, user_info).
+
+    - client: APIClient con header Authorization ya configurado (admin)
+    - user_info: dict con id, email, password del admin
+    """
+    client = APIClient()
+
+    # 1. Registrar
+    reg = client.post(
+        "/api/users/register/",
+        {"email": "admin@example.com", "password": "adminpass123"},
+        format="json",
+    )
+    user_id = reg.data["id"]
+
+    # 2. Verificar email + promover a admin
+    UserModel.objects.filter(id=user_id).update(is_email_verified=True, role="admin")
+
+    # 3. Login
+    login_response = client.post(
+        "/api/users/login/",
+        {"email": "admin@example.com", "password": "adminpass123"},
+        format="json",
+    )
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {login_response.data['access_token']}")
+
+    user_info = {"id": user_id, "email": "admin@example.com", "password": "adminpass123"}
+    return client, user_info
