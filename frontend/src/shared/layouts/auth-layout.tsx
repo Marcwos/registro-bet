@@ -8,7 +8,7 @@ import { motion } from "motion/react";
  */
 export function AuthLayout() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 dark:bg-slate-900">
       <motion.div
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 12 }}

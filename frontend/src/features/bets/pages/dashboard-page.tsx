@@ -120,8 +120,8 @@ export function DashboardPage() {
     <div className="min-w-0 space-y-4 md:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-slate-900 md:text-2xl">Dashboard</h1>
-        <p className="mt-0.5 text-xs text-slate-500 md:mt-1 md:text-sm">
+        <h1 className="text-xl font-bold text-slate-900 md:text-2xl dark:text-slate-100">Dashboard</h1>
+        <p className="mt-0.5 text-xs text-slate-500 md:mt-1 md:text-sm dark:text-slate-400">
           Resumen de tus apuestas y rendimiento
         </p>
       </div>
@@ -156,8 +156,8 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 md:gap-8 lg:grid-cols-3">
         {/* Formulario (1/3) */}
         <div className="lg:col-span-1">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
-            <h2 className="mb-3 text-base font-semibold text-slate-900 md:mb-4 md:text-lg">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6 dark:border-slate-700 dark:bg-slate-800">
+            <h2 className="mb-3 text-base font-semibold text-slate-900 md:mb-4 md:text-lg dark:text-slate-100">
               Nueva apuesta
             </h2>
             <BetForm
@@ -171,12 +171,12 @@ export function DashboardPage() {
 
         {/* Tabla de hoy (2/3) */}
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 px-4 py-3 md:px-6 md:py-4">
-              <h2 className="text-base font-semibold text-slate-900 md:text-lg">
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+            <div className="border-b border-slate-200 px-4 py-3 md:px-6 md:py-4 dark:border-slate-700">
+              <h2 className="text-base font-semibold text-slate-900 md:text-lg dark:text-slate-100">
                 Apuestas de hoy
               </h2>
-              <p className="text-xs text-slate-500 md:text-sm">
+              <p className="text-xs text-slate-500 md:text-sm dark:text-slate-400">
                 {todayBets.length} apuesta{todayBets.length !== 1 && "s"}
               </p>
             </div>

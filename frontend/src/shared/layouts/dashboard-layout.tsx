@@ -12,15 +12,15 @@ export function DashboardLayout() {
   const open = useSidebar((s) => s.open);
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900">
       <Sidebar />
 
       <div className="flex flex-1 flex-col lg:ml-64">
         {/* Mobile header */}
-        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden dark:border-slate-700 dark:bg-slate-800">
           <button
             onClick={open}
-            className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100"
+            className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
             aria-label="Abrir menu"
           >
             <Menu className="h-5 w-5" />

@@ -27,7 +27,7 @@ export function BetTable({ bets, statuses, onChangeStatus, onEdit, onDelete }: B
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-slate-200">
+          <tr className="border-b border-slate-200 dark:border-slate-700">
             <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wider text-slate-500 md:px-4 md:py-3">
               Titulo
             </th>
@@ -48,7 +48,7 @@ export function BetTable({ bets, statuses, onChangeStatus, onEdit, onDelete }: B
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
           {bets.map((bet) => (
             <BetRow
               key={bet.id}
@@ -109,7 +109,7 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
 
   if (statusCode === "lost") {
     profitText = "$0.00";
-    profitClass = "text-rose-600";
+    profitClass = "text-rose-600 dark:text-rose-400";
     tooltipText = `+$${profitExpected.toFixed(2)}`;
   } else if (statusCode === "void") {
     profitText = `$${Number(bet.stake_amount).toFixed(2)}`;
@@ -117,7 +117,7 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
   } else {
     // pending o won: mostrar ganancia esperada en verde
     profitText = `+$${profitExpected.toFixed(2)}`;
-    profitClass = "text-emerald-600";
+    profitClass = "text-emerald-600 dark:text-emerald-400";
   }
 
   const handleTooltipEnter = () => {
@@ -129,10 +129,10 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
   };
 
   return (
-    <tr className="transition-colors hover:bg-slate-50">
+    <tr className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50">
       <td className="px-2 py-2 md:px-4 md:py-3">
         <div className="min-w-0">
-          <p className="truncate text-xs font-medium text-slate-900 md:text-sm">{bet.title}</p>
+          <p className="truncate text-xs font-medium text-slate-900 md:text-sm dark:text-slate-100">{bet.title}</p>
           {bet.description && (
             <p className="mt-0.5 text-xs text-slate-400 line-clamp-1">
               {bet.description}
@@ -144,10 +144,10 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
           </div>
         </div>
       </td>
-      <td className="px-2 py-2 text-right text-xs text-slate-700 md:px-4 md:py-3 md:text-sm">
+      <td className="px-2 py-2 text-right text-xs text-slate-700 md:px-4 md:py-3 md:text-sm dark:text-slate-300">
         ${Number(bet.stake_amount).toFixed(2)}
       </td>
-      <td className="px-2 py-2 text-right text-xs text-slate-700 md:px-4 md:py-3 md:text-sm">
+      <td className="px-2 py-2 text-right text-xs text-slate-700 md:px-4 md:py-3 md:text-sm dark:text-slate-300">
         {Number(bet.odds).toFixed(2)}
       </td>
       <td className={`px-2 py-2 text-right text-xs font-medium md:px-4 md:py-3 md:text-sm ${profitClass}`}>
@@ -177,23 +177,23 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
         <div className="relative inline-block" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
           >
             <MoreHorizontal className="h-4 w-4" />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 z-10 mt-1 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+            <div className="absolute right-0 z-10 mt-1 w-44 rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800">
               <button
                 onClick={() => { onEdit(bet); setMenuOpen(false); }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700"
               >
                 <Pencil className="h-4 w-4" />
                 Editar
               </button>
               <button
                 onClick={() => { onDelete(bet); setMenuOpen(false); }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-rose-600 hover:bg-rose-50"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/20"
               >
                 <Trash2 className="h-4 w-4" />
                 Eliminar

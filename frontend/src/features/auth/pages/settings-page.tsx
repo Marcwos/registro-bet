@@ -12,8 +12,8 @@ export function SettingsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Configuracion</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Configuracion</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Administra tu cuenta y preferencias
         </p>
       </div>
@@ -22,12 +22,12 @@ export function SettingsPage() {
         {/* Cuenta */}
         <Card>
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
               <User className="h-5 w-5 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Cuenta</h2>
-              <p className="text-sm text-slate-500">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Cuenta</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Informacion de tu cuenta
               </p>
             </div>
@@ -35,18 +35,18 @@ export function SettingsPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-500">
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400">
                 Email
               </label>
-              <p className="mt-1 text-sm font-medium text-slate-900">
+              <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-100">
                 {user?.email ?? "—"}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-500">
+              <label className="block text-sm font-medium text-slate-500 dark:text-slate-400">
                 Rol
               </label>
-              <p className="mt-1 text-sm font-medium capitalize text-slate-900">
+              <p className="mt-1 text-sm font-medium capitalize text-slate-900 dark:text-slate-100">
                 {user?.role ?? "—"}
               </p>
             </div>
@@ -56,25 +56,25 @@ export function SettingsPage() {
         {/* Tema */}
         <Card>
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700">
               {theme === "dark" ? (
-                <Moon className="h-5 w-5 text-slate-600" />
+                <Moon className="h-5 w-5 text-slate-600 dark:text-slate-300" />
               ) : (
-                <Sun className="h-5 w-5 text-slate-600" />
+                <Sun className="h-5 w-5 text-slate-600 dark:text-slate-300" />
               )}
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 Apariencia
               </h2>
-              <p className="text-sm text-slate-500">Personaliza la interfaz</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Personaliza la interfaz</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-900">Modo oscuro</p>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Modo oscuro</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 {theme === "dark" ? "Activado" : "Desactivado"}
               </p>
             </div>
@@ -97,14 +97,14 @@ export function SettingsPage() {
         <div className="lg:col-span-2">
           <Card>
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/30">
                 <Lock className="h-5 w-5 text-rose-600" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                   Cambiar contraseña
                 </h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   Actualiza tu contraseña de acceso
                 </p>
               </div>

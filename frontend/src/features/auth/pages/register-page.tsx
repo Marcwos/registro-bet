@@ -60,14 +60,14 @@ export function RegisterPage() {
       <Card>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {registerMutation.isError && (
-            <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600">
+            <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600 dark:bg-rose-900/20 dark:text-rose-400">
               {getApiErrorMessage(registerMutation.error)}
             </div>
           )}
 
           {/* Email */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Email
             </label>
             <div className="relative">
@@ -76,21 +76,21 @@ export function RegisterPage() {
                 {...register("email")}
                 type="email"
                 placeholder="nombre@correo.com"
-                className={`w-full rounded-lg border py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full rounded-lg border py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900/50 dark:text-slate-100 dark:placeholder:text-slate-500 ${
                   errors.email
                     ? "border-rose-500 focus:ring-rose-500"
-                    : "border-slate-300"
+                    : "border-slate-300 dark:border-slate-700"
                 }`}
               />
             </div>
             {errors.email && (
-              <p className="text-sm text-rose-600">{errors.email.message}</p>
+              <p className="text-sm text-rose-600 dark:text-rose-400">{errors.email.message}</p>
             )}
           </div>
 
           {/* Password */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Contrasena
             </label>
             <div className="relative">
@@ -99,10 +99,10 @@ export function RegisterPage() {
                 {...register("password")}
                 type={showPassword ? "text" : "password"}
                 placeholder="Minimo 8 caracteres"
-                className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900/50 dark:text-slate-100 dark:placeholder:text-slate-500 ${
                   errors.password
                     ? "border-rose-500 focus:ring-rose-500"
-                    : "border-slate-300"
+                    : "border-slate-300 dark:border-slate-700"
                 }`}
               />
               <button
@@ -118,7 +118,7 @@ export function RegisterPage() {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-rose-600">
+              <p className="text-sm text-rose-600 dark:text-rose-400">
                 {errors.password.message}
               </p>
             )}
@@ -126,7 +126,7 @@ export function RegisterPage() {
 
           {/* Confirm Password */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Confirmar contrasena
             </label>
             <div className="relative">
@@ -135,15 +135,15 @@ export function RegisterPage() {
                 {...register("confirmPassword")}
                 type={showPassword ? "text" : "password"}
                 placeholder="Repite tu contrasena"
-                className={`w-full rounded-lg border py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-full rounded-lg border py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900/50 dark:text-slate-100 dark:placeholder:text-slate-500 ${
                   errors.confirmPassword
                     ? "border-rose-500 focus:ring-rose-500"
-                    : "border-slate-300"
+                    : "border-slate-300 dark:border-slate-700"
                 }`}
               />
             </div>
             {errors.confirmPassword && (
-              <p className="text-sm text-rose-600">
+              <p className="text-sm text-rose-600 dark:text-rose-400">
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -167,7 +167,7 @@ export function RegisterPage() {
         </form>
       </Card>
 
-      <p className="mt-6 text-center text-sm text-slate-500">
+      <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
         Ya tienes cuenta?{" "}
         <Link
           to="/login"

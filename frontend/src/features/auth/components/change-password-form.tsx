@@ -47,7 +47,7 @@ export function ChangePasswordForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Exito */}
       {mutation.isSuccess && (
-        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">
+        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400">
           <CheckCircle className="h-4 w-4" />
           Contraseña cambiada exitosamente. Cerrando sesion...
         </div>
@@ -55,14 +55,14 @@ export function ChangePasswordForm() {
 
       {/* Error del backend */}
       {mutation.isError && (
-        <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600">
+        <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600 dark:bg-rose-900/20 dark:text-rose-400">
           {getApiErrorMessage(mutation.error)}
         </div>
       )}
 
       {/* Contraseña actual */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
           Contraseña actual
         </label>
         <div className="relative">
@@ -71,10 +71,10 @@ export function ChangePasswordForm() {
             {...register("current_password")}
             type={showCurrent ? "text" : "password"}
             placeholder="Tu contraseña actual"
-            className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900/50 dark:text-slate-100 dark:placeholder:text-slate-500 ${
               errors.current_password
                 ? "border-rose-500 focus:ring-rose-500"
-                : "border-slate-300"
+                : "border-slate-300 dark:border-slate-700"
             }`}
           />
           <button
@@ -90,7 +90,7 @@ export function ChangePasswordForm() {
           </button>
         </div>
         {errors.current_password && (
-          <p className="text-sm text-rose-600">
+          <p className="text-sm text-rose-600 dark:text-rose-400">
             {errors.current_password.message}
           </p>
         )}
@@ -98,7 +98,7 @@ export function ChangePasswordForm() {
 
       {/* Nueva contraseña */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
           Nueva contraseña
         </label>
         <div className="relative">
@@ -107,10 +107,10 @@ export function ChangePasswordForm() {
             {...register("new_password")}
             type={showNew ? "text" : "password"}
             placeholder="Minimo 8 caracteres"
-            className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900/50 dark:text-slate-100 dark:placeholder:text-slate-500 ${
               errors.new_password
                 ? "border-rose-500 focus:ring-rose-500"
-                : "border-slate-300"
+                : "border-slate-300 dark:border-slate-700"
             }`}
           />
           <button
@@ -126,13 +126,13 @@ export function ChangePasswordForm() {
           </button>
         </div>
         {errors.new_password && (
-          <p className="text-sm text-rose-600">{errors.new_password.message}</p>
+          <p className="text-sm text-rose-600 dark:text-rose-400">{errors.new_password.message}</p>
         )}
       </div>
 
       {/* Confirmar nueva contraseña */}
       <div className="space-y-1.5">
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
           Confirmar nueva contraseña
         </label>
         <div className="relative">
@@ -141,10 +141,10 @@ export function ChangePasswordForm() {
             {...register("confirm_password")}
             type={showConfirm ? "text" : "password"}
             placeholder="Repite la nueva contraseña"
-            className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-900/50 dark:text-slate-100 dark:placeholder:text-slate-500 ${
               errors.confirm_password
                 ? "border-rose-500 focus:ring-rose-500"
-                : "border-slate-300"
+                : "border-slate-300 dark:border-slate-700"
             }`}
           />
           <button
@@ -160,14 +160,14 @@ export function ChangePasswordForm() {
           </button>
         </div>
         {errors.confirm_password && (
-          <p className="text-sm text-rose-600">
+          <p className="text-sm text-rose-600 dark:text-rose-400">
             {errors.confirm_password.message}
           </p>
         )}
       </div>
 
       {/* Info sobre sesiones */}
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-slate-400 dark:text-slate-500">
         Al cambiar tu contraseña, se cerraran todas tus sesiones activas.
       </p>
 

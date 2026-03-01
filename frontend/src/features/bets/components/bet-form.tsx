@@ -8,10 +8,10 @@ import type { Bet, BetStatus } from "../types";
 
 // ─── Opciones de estado para el selector ────────────────
 const statusOptions = [
-  { code: "pending", label: "Pendiente", active: "bg-slate-600 text-white ring-2 ring-offset-2 ring-slate-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
-  { code: "won", label: "Ganada", active: "bg-emerald-600 text-white ring-2 ring-offset-2 ring-emerald-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
-  { code: "lost", label: "Perdida", active: "bg-rose-600 text-white ring-2 ring-offset-2 ring-rose-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
-  { code: "void", label: "Nula", active: "bg-gray-500 text-white ring-2 ring-offset-2 ring-gray-400", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
+  { code: "pending", label: "Pendiente", active: "bg-slate-600 text-white ring-2 ring-offset-2 ring-slate-400 dark:ring-offset-slate-800", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:bg-slate-800" },
+  { code: "won", label: "Ganada", active: "bg-emerald-600 text-white ring-2 ring-offset-2 ring-emerald-400 dark:ring-offset-slate-800", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:bg-slate-800" },
+  { code: "lost", label: "Perdida", active: "bg-rose-600 text-white ring-2 ring-offset-2 ring-rose-400 dark:ring-offset-slate-800", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:bg-slate-800" },
+  { code: "void", label: "Nula", active: "bg-gray-500 text-white ring-2 ring-offset-2 ring-gray-400 dark:ring-offset-slate-800", idle: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:bg-slate-800" },
 ];
 
 // ─── Schema de validacion ───────────────────────────────
@@ -81,7 +81,7 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       {error && (
-        <div className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600">
+        <div className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-600 dark:bg-rose-900/20 dark:text-rose-400">
           {error}
         </div>
       )}
@@ -122,7 +122,7 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
       {/* Selector de estado (solo en modo edicion) */}
       {bet && statuses && (
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-slate-700">Estado</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Estado</label>
           <div className="grid grid-cols-4 gap-2">
             {statusOptions.map((opt) => (
               <button

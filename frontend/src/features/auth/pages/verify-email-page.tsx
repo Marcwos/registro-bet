@@ -89,7 +89,7 @@ export function VerifyEmailPage() {
         />
         <Card className="text-center">
           <CheckCircle className="mx-auto h-12 w-12 text-emerald-500" />
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
             Ya puedes iniciar sesion con tu cuenta.
           </p>
           <Button
@@ -118,7 +118,7 @@ export function VerifyEmailPage() {
         <div className="space-y-5">
           {/* Error */}
           {verifyMutation.isError && (
-            <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600">
+            <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600 dark:bg-rose-900/20 dark:text-rose-400">
               {getApiErrorMessage(verifyMutation.error)}
             </div>
           )}
@@ -138,7 +138,7 @@ export function VerifyEmailPage() {
                 onChange={(e) => handleChange(i, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 onPaste={i === 0 ? handlePaste : undefined}
-                className="h-12 w-12 rounded-lg border border-slate-300 text-center text-lg font-semibold text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-12 w-12 rounded-lg border border-slate-300 text-center text-lg font-semibold text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-100"
                 disabled={verifyMutation.isPending}
               />
             ))}
@@ -183,12 +183,12 @@ export function VerifyEmailPage() {
               Reenviar codigo
             </button>
             {sendMutation.isSuccess && (
-              <p className="mt-2 text-sm text-emerald-600">
+              <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">
                 Codigo reenviado exitosamente
               </p>
             )}
             {sendMutation.isError && (
-              <p className="mt-2 text-sm text-rose-600">
+              <p className="mt-2 text-sm text-rose-600 dark:text-rose-400">
                 {getApiErrorMessage(sendMutation.error)}
               </p>
             )}
@@ -196,7 +196,7 @@ export function VerifyEmailPage() {
         </div>
       </Card>
 
-      <p className="mt-6 text-center text-sm text-slate-500">
+      <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
         <Link
           to="/login"
           className="font-medium text-blue-600 hover:text-blue-700"

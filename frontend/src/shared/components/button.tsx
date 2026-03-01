@@ -6,11 +6,11 @@ import type { ButtonHTMLAttributes } from "react";
  * danger = accion destructiva (rojo), ghost = solo hover.
  */
 const variants = {
-  primary: "bg-slate-900 text-white hover:bg-slate-800",
+  primary: "bg-slate-900 text-white hover:bg-slate-800 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500",
   secondary:
-    "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50",
+    "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 dark:bg-slate-900/50 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800",
   danger: "bg-rose-600 text-white hover:bg-rose-700",
-  ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+  ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100",
 } as const;
 
 const sizes = {
@@ -33,7 +33,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-slate-900 ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {children}

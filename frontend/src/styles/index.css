@@ -16,5 +16,6 @@
 
 /* Estilos base del body */
 body {
-  @apply font-sans text-slate-900 bg-slate-50 antialiased;
+  @apply font-sans text-slate-900 bg-slate-50 antialiased
+    dark:bg-slate-900 dark:text-slate-100;
 }

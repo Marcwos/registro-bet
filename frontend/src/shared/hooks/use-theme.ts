@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { create } from "zustand";
 
 type Theme = "light" | "dark";
 
@@ -11,8 +12,24 @@ function getInitialTheme(): Theme {
     : "light";
 }
 
+interface ThemeStore {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+
+const useThemeStore = create<ThemeStore>((set) => ({
+  theme: getInitialTheme(),
+  toggleTheme: () =>
+    set((state) => ({ theme: state.theme === "dark" ? "light" : "dark" })),
+}));
+
+/**
+ * Hook que sincroniza el tema con el DOM y localStorage.
+ * Debe llamarse al menos una vez en un componente raiz (AppProviders).
+ * Puede llamarse desde cualquier otro componente para leer/cambiar el tema.
+ */
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const { theme, toggleTheme } = useThemeStore();
 
   useEffect(() => {
     const root = document.documentElement;
@@ -23,9 +40,6 @@ export function useTheme() {
     }
     localStorage.setItem("theme", theme);
   }, [theme]);
-
-  const toggleTheme = () =>
-    setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return { theme, toggleTheme };
 }

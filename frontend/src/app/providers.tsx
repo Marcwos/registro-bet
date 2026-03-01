@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
+import { useTheme } from "@/shared/hooks/use-theme";
 
 /**
  * QueryClient es el "cerebro" de TanStack Query.
@@ -24,6 +25,9 @@ const queryClient = new QueryClient({
  */
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const hydrate = useAuthStore((state) => state.hydrate);
+
+  // Aplica el tema (dark/light) globalmente al cargar la app
+  useTheme();
 
   useEffect(() => {
     hydrate();
