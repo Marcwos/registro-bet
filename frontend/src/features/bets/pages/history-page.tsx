@@ -33,7 +33,7 @@ function formatDate(date: Date): string {
 function getDefaultRange(): { start: string; end: string } {
   const end = new Date();
   const start = new Date();
-  start.setDate(start.getDate() - 30);
+  start.setDate(start.getDate() - 15);
   return { start: formatDate(start), end: formatDate(end) };
 }
 

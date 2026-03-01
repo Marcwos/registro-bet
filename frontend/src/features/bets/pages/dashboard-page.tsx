@@ -6,7 +6,7 @@ import { BetTable } from "../components/bet-table";
 import { ChangeStatusModal } from "../components/change-status-modal";
 import { ConfirmDeleteModal } from "../components/confirm-delete-modal";
 import { Modal } from "@/shared/components/modal";
-import { useBets, useDailyBalance, useTotalBalance } from "../hooks/use-bets";
+import { useBets, useDailyBalance } from "../hooks/use-bets";
 import { useStatuses } from "../hooks/use-catalogs";
 import {
   useCreateBet,
@@ -21,7 +21,6 @@ export function DashboardPage() {
   // ─── Queries ──────────────────────────────────────────
   const { data: bets = [], isLoading: loadingBets } = useBets();
   const { data: dailyBalance } = useDailyBalance();
-  const { data: totalBalance } = useTotalBalance();
   const { data: statuses = [] } = useStatuses();
 
   // ─── Mutations ────────────────────────────────────────
@@ -94,9 +93,9 @@ export function DashboardPage() {
   };
 
   // ─── Stats helpers ────────────────────────────────────
-  const netProfit = Number(totalBalance?.net_profit ?? 0);
+  const netProfit = Number(dailyBalance?.net_profit ?? 0);
   const dailyReturn = Number(dailyBalance?.total_return ?? 0);
-  const totalStaked = Number(totalBalance?.total_staked ?? 0);
+  const totalStaked = Number(dailyBalance?.total_staked ?? 0);
 
   const formatMoney = (value: number) => {
     const sign = value >= 0 ? "+" : "";
