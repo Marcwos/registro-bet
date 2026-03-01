@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from uuid import UUID
 
 from ...domain.entities.bet import Bet
@@ -55,6 +55,14 @@ class DjangoBetRepository(BetRepository):
         models = BetModel.objects.filter(
             user_id=user_id,
             placed_at__date=tarjet_date,
+        ).order_by("-placed_at")
+        return [BetMapper.to_domain(m) for m in models]
+
+    def get_by_user_and_datetime_range(self, user_id: UUID, start: datetime, end: datetime) -> list[Bet]:
+        models = BetModel.objects.filter(
+            user_id=user_id,
+            placed_at__gte=start,
+            placed_at__lt=end,
         ).order_by("-placed_at")
         return [BetMapper.to_domain(m) for m in models]
 

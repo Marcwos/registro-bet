@@ -56,11 +56,14 @@ class DailyBalanceView(APIView):
         else:
             target_date = date.today()
 
+        # Offset de timezone del cliente (minutos, como JS getTimezoneOffset())
+        tz_offset = int(request.query_params.get("tz_offset", 0))
+
         bet_repo = DjangoBetRepository()
         status_repo = DjangoBetStatusRepository()
 
         use_case = GetDailyBalance(bet_repo, status_repo)
-        balance = use_case.execute(user_id=user_id, tarjet_date=target_date)
+        balance = use_case.execute(user_id=user_id, tarjet_date=target_date, tz_offset_minutes=tz_offset)
 
         serializer = DailyBalanceResponseSerializer(
             {

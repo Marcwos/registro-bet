@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import date
+from datetime import date, datetime
 from uuid import UUID
 
 from ..entities.bet import Bet
@@ -29,6 +29,10 @@ class BetRepository(ABC):
     @abstractmethod
     def get_by_user_and_date(self, user_id: UUID, tarjet_date: date) -> list[Bet]:
         """Obtener apuestas de un usuario en una fecha especifica"""
+
+    @abstractmethod
+    def get_by_user_and_datetime_range(self, user_id: UUID, start: datetime, end: datetime) -> list[Bet]:
+        """Obtener apuestas de un usuario en un rango de datetimes UTC""" ""
 
     @abstractmethod
     def get_by_user_date_range(self, user_id: UUID, start_date: date, end_date: date) -> list[Bet]:

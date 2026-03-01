@@ -58,7 +58,10 @@ export async function fetchCategories(): Promise<BetCategory[]> {
 // ─── Balance / Estadisticas ─────────────────────────────
 
 export async function fetchDailyBalance(date?: string): Promise<DailyBalance> {
-  const params = date ? { date } : {};
+  const params: Record<string, string | number> = {
+    tz_offset: new Date().getTimezoneOffset(),
+  };
+  if (date) params.date = date;
   const response = await httpClient.get<DailyBalance>("/bets/balance/daily/", { params });
   return response.data;
 }
