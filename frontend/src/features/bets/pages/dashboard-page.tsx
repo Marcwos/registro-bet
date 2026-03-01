@@ -102,7 +102,7 @@ export function DashboardPage() {
   const totalStaked = Number(dailyBalance?.total_staked ?? 0);
 
   const formatMoney = (value: number) => {
-    const sign = value >= 0 ? "+" : "";
+    const sign = value >= 0 ? "+" : "-";
     return `${sign}$${Math.abs(value).toFixed(2)}`;
   };
 
@@ -138,9 +138,9 @@ export function DashboardPage() {
         />
         <StatCard
           label="Retorno total"
-          value={formatMoney(dailyReturn)}
+          value={`$${dailyReturn.toFixed(2)}`}
           icon={Wallet}
-          trend={getTrend(dailyReturn)}
+          trend="neutral"
           index={1}
         />
         <StatCard

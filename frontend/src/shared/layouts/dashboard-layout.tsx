@@ -15,7 +15,7 @@ export function DashboardLayout() {
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900">
       <Sidebar />
 
-      <div className="flex flex-1 flex-col lg:ml-64">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
         {/* Mobile header */}
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden dark:border-slate-700 dark:bg-slate-800">
           <button
@@ -33,7 +33,7 @@ export function DashboardLayout() {
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6 lg:p-10">
+        <main className="flex-1 overflow-x-hidden p-4 md:p-6 lg:p-10">
           <div className="mx-auto max-w-7xl">
             <Outlet />
           </div>

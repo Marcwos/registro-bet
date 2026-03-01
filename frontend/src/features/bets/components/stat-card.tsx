@@ -18,10 +18,16 @@ const trendStyles = {
   neutral: "text-slate-600 bg-slate-100 dark:text-slate-400 dark:bg-slate-700",
 };
 
+const trendBg = {
+  positive: "bg-emerald-50/60 border-emerald-200 dark:bg-emerald-900/10 dark:border-emerald-500/20",
+  negative: "bg-rose-50/60 border-rose-200 dark:bg-rose-900/10 dark:border-rose-500/20",
+  neutral: "bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700",
+};
+
 export function StatCard({ label, value, icon: Icon, trend = "neutral", index = 0, className = "" }: StatCardProps) {
   return (
     <motion.div
-      className={`rounded-2xl border border-slate-200 bg-white p-3 shadow-sm md:p-6 dark:border-slate-700 dark:bg-slate-800 ${className}`}
+      className={`rounded-2xl border p-3 shadow-sm md:p-6 ${trendBg[trend]} ${className}`}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.08 }}

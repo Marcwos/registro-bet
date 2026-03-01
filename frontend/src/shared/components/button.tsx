@@ -6,7 +6,7 @@ import type { ButtonHTMLAttributes } from "react";
  * danger = accion destructiva (rojo), ghost = solo hover.
  */
 const variants = {
-  primary: "bg-slate-900 text-white hover:bg-slate-800 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500",
+  primary: "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500",
   secondary:
     "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 dark:bg-slate-900/50 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800",
   danger: "bg-rose-600 text-white hover:bg-rose-700",

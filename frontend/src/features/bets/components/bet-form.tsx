@@ -91,6 +91,7 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
         <Input
           label="Monto apostado"
           type="number"
+          inputMode="decimal"
           step="0.01"
           min="0.01"
           placeholder="0.00"
@@ -100,6 +101,7 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
         <Input
           label="Cuota (odds)"
           type="number"
+          inputMode="decimal"
           step="0.01"
           min="1.01"
           placeholder="1.85"
@@ -108,14 +110,16 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
         />
       </div>
 
-      {/* Ganancia esperada (ingresada por el usuario) */}
+      {/* Ganancia esperada — estilo de resultado */}
       <Input
         label="Ganancia esperada"
         type="number"
+        inputMode="decimal"
         step="0.01"
         min="0.01"
-        placeholder="00.00"
+        placeholder="0.00"
         error={errors.profit_expected?.message}
+        className="border-transparent bg-slate-50 text-lg font-semibold text-emerald-600 dark:bg-slate-700/50 dark:text-emerald-400"
         {...register("profit_expected")}
       />
 
