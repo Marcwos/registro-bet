@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { DollarSign, TrendingUp, TrendingDown } from "lucide-react";
+import { DollarSign, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { StatCard } from "../components/stat-card";
 import { BetForm } from "../components/bet-form";
 import { BetTable } from "../components/bet-table";
 import { ChangeStatusModal } from "../components/change-status-modal";
 import { ConfirmDeleteModal } from "../components/confirm-delete-modal";
 import { Modal } from "@/shared/components/modal";
-import { useBets, useDailyBalance } from "../hooks/use-bets";
+import { useBets, useDailyBalance, useTotalBalance } from "../hooks/use-bets";
 import { useStatuses } from "../hooks/use-catalogs";
 import {
   useCreateBet,
@@ -21,6 +21,7 @@ export function DashboardPage() {
   // ─── Queries ──────────────────────────────────────────
   const { data: bets = [], isLoading: loadingBets } = useBets();
   const { data: dailyBalance } = useDailyBalance();
+  const { data: totalBalance } = useTotalBalance();
   const { data: statuses = [] } = useStatuses();
 
   // ─── Mutations ────────────────────────────────────────
@@ -93,10 +94,9 @@ export function DashboardPage() {
   };
 
   // ─── Stats helpers ────────────────────────────────────
-  const netProfit = Number(dailyBalance?.net_profit ?? 0);
-  const totalStaked = Number(dailyBalance?.total_staked ?? 0);
-  const totalWon = Number(dailyBalance?.total_won ?? 0);
-  const totalLost = Number(dailyBalance?.total_lost ?? 0);
+  const netProfit = Number(totalBalance?.net_profit ?? 0);
+  const dailyReturn = Number(dailyBalance?.total_return ?? 0);
+  const totalStaked = Number(totalBalance?.total_staked ?? 0);
 
   const formatMoney = (value: number) => {
     const sign = value >= 0 ? "+" : "";
@@ -122,35 +122,29 @@ export function DashboardPage() {
         </p>
       </div>
 
-      {/* Stats Cards — 2-col grid en mobile, 4-col en lg+ */}
-      <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-4">
+      {/* Stats Cards — 2-col grid en mobile, 3-col en md+ */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6">
         <StatCard
-          label="Ganancia neta"
+          label="Ganancia neta total"
           value={formatMoney(netProfit)}
           icon={netProfit >= 0 ? TrendingUp : TrendingDown}
           trend={getTrend(netProfit)}
           index={0}
+          className="col-span-2 md:col-span-1"
+        />
+        <StatCard
+          label="Retorno total"
+          value={formatMoney(dailyReturn)}
+          icon={Wallet}
+          trend={getTrend(dailyReturn)}
+          index={1}
         />
         <StatCard
           label="Total apostado"
           value={`$${totalStaked.toFixed(2)}`}
           icon={DollarSign}
           trend="neutral"
-          index={1}
-        />
-        <StatCard
-          label="Total ganado"
-          value={formatMoney(totalWon)}
-          icon={TrendingUp}
-          trend={getTrend(totalWon)}
           index={2}
-        />
-        <StatCard
-          label="Total perdido"
-          value={formatMoney(-totalLost)}
-          icon={TrendingDown}
-          trend={totalLost > 0 ? "negative" : "neutral"}
-          index={3}
         />
       </div>
 
