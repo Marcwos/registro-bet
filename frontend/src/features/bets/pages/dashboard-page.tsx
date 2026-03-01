@@ -18,9 +18,13 @@ import { getApiErrorMessage } from "@/shared/lib/api-error";
 import type { Bet } from "../types";
 
 export function DashboardPage() {
+  // ─── Fecha local del usuario (YYYY-MM-DD) ────────────
+  const now = new Date();
+  const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
   // ─── Queries ──────────────────────────────────────────
   const { data: bets = [], isLoading: loadingBets } = useBets();
-  const { data: dailyBalance } = useDailyBalance();
+  const { data: dailyBalance } = useDailyBalance(localToday);
   const { data: statuses = [] } = useStatuses();
 
   // ─── Mutations ────────────────────────────────────────
@@ -105,11 +109,12 @@ export function DashboardPage() {
   const getTrend = (value: number): "positive" | "negative" | "neutral" =>
     value > 0 ? "positive" : value < 0 ? "negative" : "neutral";
 
-  // ─── Filtrar apuestas del dia ─────────────────────────
-  const today = new Date().toISOString().slice(0, 10);
-  const todayBets = bets.filter(
-    (bet) => bet.placed_at.slice(0, 10) === today,
-  );
+  // ─── Filtrar apuestas del dia (zona horaria local) ───
+  const todayBets = bets.filter((bet) => {
+    const d = new Date(bet.placed_at);
+    const betLocal = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    return betLocal === localToday;
+  });
 
   return (
     <div className="min-w-0 space-y-4 md:space-y-8">

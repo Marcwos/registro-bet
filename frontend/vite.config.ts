@@ -13,6 +13,8 @@ export default defineConfig({
       workbox: {
         // No cachear llamadas a la API — siempre ir a red
         navigateFallbackDenylist: [/^\/api/],
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /\/api\//,
