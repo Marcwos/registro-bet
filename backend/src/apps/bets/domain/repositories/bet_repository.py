@@ -27,6 +27,10 @@ class BetRepository(ABC):
         """Contar apuestas de un usuario en una fecha (para titulo automatico)"""
 
     @abstractmethod
+    def count_by_user_and_datetime_range(self, user_id: UUID, start: datetime, end: datetime) -> int:
+        """Contar apuestas de un usuario en un rango de datetimes UTC"""
+
+    @abstractmethod
     def get_by_user_and_date(self, user_id: UUID, tarjet_date: date) -> list[Bet]:
         """Obtener apuestas de un usuario en una fecha especifica"""
 

@@ -1,9 +1,10 @@
-from datetime import UTC, date, datetime, timedelta, timezone
+from datetime import date
 from uuid import UUID
 
 from ...domain.repositories.bet_repository import BetRepository
 from ...domain.repositories.bet_status_repository import BetStatusRepository
 from ...domain.services.balance_calculator import BalanceCalculator
+from ...domain.services.tz_utils import get_day_utc_range
 from ...domain.value_objects.balance import DailyBalance
 
 
@@ -12,17 +13,17 @@ class GetDailyBalance:
         self.bet_repository = bet_repository
         self.status_repository = status_repository
 
-    def execute(self, user_id: UUID, tarjet_date: date, tz_offset_minutes: int = 0) -> DailyBalance:
-        if tz_offset_minutes != 0:
-            # Calcular inicio/fin del dia local en UTC
-            tz = timezone(timedelta(minutes=-tz_offset_minutes))
-            local_start = datetime(tarjet_date.year, tarjet_date.month, tarjet_date.day, tzinfo=tz)
-            local_end = local_start + timedelta(days=1)
-            utc_start = local_start.astimezone(UTC)
-            utc_end = local_end.astimezone(UTC)
+    def execute(
+        self,
+        user_id: UUID,
+        tarjet_date: date,
+        tz_name: str | None = None,
+        tz_offset_minutes: int = 0,
+    ) -> DailyBalance:
+        if tz_name or tz_offset_minutes != 0:
+            utc_start, utc_end = get_day_utc_range(tarjet_date, tz_name=tz_name, tz_offset_minutes=tz_offset_minutes)
             bets = self.bet_repository.get_by_user_and_datetime_range(user_id, utc_start, utc_end)
         else:
-            # Sin offset: filtrar por fecha UTC (comportamiento original)
             bets = self.bet_repository.get_by_user_and_date(user_id, tarjet_date)
 
         # Construir mapa de estados para el calculador

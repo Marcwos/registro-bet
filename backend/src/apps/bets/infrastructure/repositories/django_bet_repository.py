@@ -51,6 +51,13 @@ class DjangoBetRepository(BetRepository):
             placed_at__date=target_date,
         ).count()
 
+    def count_by_user_and_datetime_range(self, user_id: UUID, start: datetime, end: datetime) -> int:
+        return BetModel.objects.filter(
+            user_id=user_id,
+            placed_at__gte=start,
+            placed_at__lt=end,
+        ).count()
+
     def get_by_user_and_date(self, user_id: UUID, tarjet_date: date) -> list[Bet]:
         models = BetModel.objects.filter(
             user_id=user_id,

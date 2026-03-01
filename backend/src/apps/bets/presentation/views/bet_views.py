@@ -24,6 +24,7 @@ from ...domain.exceptions import (
     InvalidProfitExpectedException,
     InvalidStakeAmountException,
 )
+from ...domain.services.tz_utils import parse_tz_params
 from ...infrastructure.repositories.django_bet_repository import DjangoBetRepository
 from ...infrastructure.repositories.django_bet_status_repository import DjangoBetStatusRepository
 from ..serializers.bet_serializer import (
@@ -94,9 +95,15 @@ class BetListCreateView(APIView):
         bet_repo = DjangoBetRepository()
         status_repo = DjangoBetStatusRepository()
 
+        # Extraer timezone del body (tz / tz_offset)
+        try:
+            tz_params = parse_tz_params(request.data)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             use_case = CreateBet(bet_repo, status_repo)
-            bet = use_case.execute(user_id=user_id, **serializer.validated_data)
+            bet = use_case.execute(user_id=user_id, **serializer.validated_data, **tz_params)
         except (InvalidStakeAmountException, InvalidOddsException, InvalidProfitExpectedException) as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except BetStatusNotFoundException as e:

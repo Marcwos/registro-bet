@@ -1,6 +1,7 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import UUID, uuid4
+from zoneinfo import ZoneInfo
 
 from ...domain.entities.bet import Bet
 from ...domain.exceptions import (
@@ -11,6 +12,7 @@ from ...domain.exceptions import (
 )
 from ...domain.repositories.bet_repository import BetRepository
 from ...domain.repositories.bet_status_repository import BetStatusRepository
+from ...domain.services.tz_utils import get_day_utc_range
 from ...domain.value_objects.money import Money
 from ...domain.value_objects.odds import Odds
 
@@ -31,6 +33,8 @@ class CreateBet:
         sport_id: UUID | None = None,
         category_id: UUID | None = None,
         description: str = "",
+        tz_name: str | None = None,
+        tz_offset_minutes: int = 0,
     ) -> Bet:
         # Valida monto y couta con value Objects
         try:
@@ -56,9 +60,16 @@ class CreateBet:
         if profit_expected is None or profit_expected < Decimal("0"):
             raise InvalidProfitExpectedException("La ganancia esperada debe ser mayor o igual a 0.")
 
-        # Titulo Automatico: "Apuesta N"
-        bet_date = bet_placed_at.date()
-        count = self.bet_repository.count_by_user_and_date(user_id, bet_date)
+        # Titulo Automatico: "Apuesta N" (timezone-aware)
+        if tz_name or tz_offset_minutes != 0:
+            # Convertir placed_at a fecha local del usuario
+            local_tz = ZoneInfo(tz_name) if tz_name else timezone(timedelta(minutes=-tz_offset_minutes))
+            local_date = bet_placed_at.astimezone(local_tz).date()
+            utc_start, utc_end = get_day_utc_range(local_date, tz_name=tz_name, tz_offset_minutes=tz_offset_minutes)
+            count = self.bet_repository.count_by_user_and_datetime_range(user_id, utc_start, utc_end)
+        else:
+            local_date = bet_placed_at.date()
+            count = self.bet_repository.count_by_user_and_date(user_id, local_date)
         title = f"Apuesta {count + 1}"
 
         bet = Bet(

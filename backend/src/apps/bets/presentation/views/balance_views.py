@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from ...application.use_cases.get_bet_history import GetBetHistory
 from ...application.use_cases.get_daily_balance import GetDailyBalance
 from ...application.use_cases.get_total_balance import GetTotalBalance
+from ...domain.services.tz_utils import parse_tz_params
 from ...infrastructure.repositories.django_bet_repository import DjangoBetRepository
 from ...infrastructure.repositories.django_bet_status_repository import (
     DjangoBetStatusRepository,
@@ -56,14 +57,17 @@ class DailyBalanceView(APIView):
         else:
             target_date = date.today()
 
-        # Offset de timezone del cliente (minutos, como JS getTimezoneOffset())
-        tz_offset = int(request.query_params.get("tz_offset", 0))
+        # Timezone del cliente (IANA name o offset en minutos)
+        try:
+            tz_params = parse_tz_params(request.query_params)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         bet_repo = DjangoBetRepository()
         status_repo = DjangoBetStatusRepository()
 
         use_case = GetDailyBalance(bet_repo, status_repo)
-        balance = use_case.execute(user_id=user_id, tarjet_date=target_date, tz_offset_minutes=tz_offset)
+        balance = use_case.execute(user_id=user_id, tarjet_date=target_date, **tz_params)
 
         serializer = DailyBalanceResponseSerializer(
             {
@@ -170,7 +174,16 @@ class BetHistoryView(APIView):
         status_repo = DjangoBetStatusRepository()
 
         use_case = GetBetHistory(bet_repo, status_repo)
-        bets, summary = use_case.execute(user_id=user_id, start_date=start_date, end_date=end_date)
+        try:
+            tz_params = parse_tz_params(request.query_params)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        bets, summary = use_case.execute(
+            user_id=user_id,
+            start_date=start_date,
+            end_date=end_date,
+            **tz_params,
+        )
 
         bets_data = [_bet_to_response(b) for b in bets]
 

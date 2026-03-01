@@ -29,8 +29,11 @@ import type { Bet, BetStatus } from "../types";
 
 // ─── Helpers ────────────────────────────────────────────
 
-function formatDate(date: Date): string {
-  return date.toISOString().slice(0, 10);
+function formatDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function getDefaultRange(): { start: string; end: string } {
@@ -49,12 +52,13 @@ function getTrend(value: number): "positive" | "negative" | "neutral" {
   return value > 0 ? "positive" : value < 0 ? "negative" : "neutral";
 }
 
-/** Agrupa apuestas por su fecha placed_at (YYYY-MM-DD) ordenadas desc */
+/** Agrupa apuestas por su fecha placed_at en hora local (YYYY-MM-DD) ordenadas desc */
 function groupByDate(bets: Bet[]): { date: string; bets: Bet[] }[] {
   const map = new Map<string, Bet[]>();
 
   for (const bet of bets) {
-    const day = bet.placed_at.slice(0, 10);
+    const d = new Date(bet.placed_at);
+    const day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const group = map.get(day);
     if (group) {
       group.push(bet);

@@ -20,7 +20,10 @@ export async function fetchBets(): Promise<Bet[]> {
 }
 
 export async function createBet(data: CreateBetRequest): Promise<Bet> {
-  const response = await httpClient.post<Bet>("/bets/", data);
+  const response = await httpClient.post<Bet>("/bets/", {
+    ...data,
+    tz: getUserTimezone(),
+  });
   return response.data;
 }
 
@@ -55,11 +58,17 @@ export async function fetchCategories(): Promise<BetCategory[]> {
   return response.data;
 }
 
+// ─── Helpers ────────────────────────────────────────────
+
+function getUserTimezone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
 // ─── Balance / Estadisticas ─────────────────────────────
 
 export async function fetchDailyBalance(date?: string): Promise<DailyBalance> {
-  const params: Record<string, string | number> = {
-    tz_offset: new Date().getTimezoneOffset(),
+  const params: Record<string, string> = {
+    tz: getUserTimezone(),
   };
   if (date) params.date = date;
   const response = await httpClient.get<DailyBalance>("/bets/balance/daily/", { params });
@@ -78,7 +87,11 @@ export async function fetchBetHistory(
   endDate: string,
 ): Promise<BetHistoryResponse> {
   const response = await httpClient.get<BetHistoryResponse>("/bets/history/", {
-    params: { start_date: startDate, end_date: endDate },
+    params: {
+      start_date: startDate,
+      end_date: endDate,
+      tz: getUserTimezone(),
+    },
   });
   return response.data;
 }
