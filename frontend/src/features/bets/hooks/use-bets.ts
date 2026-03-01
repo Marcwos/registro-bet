@@ -6,6 +6,7 @@ export function useBets() {
   return useQuery({
     queryKey: ["bets"],
     queryFn: fetchBets,
+    staleTime: 0, // Siempre refetch al montar
   });
 }
 
@@ -14,6 +15,7 @@ export function useDailyBalance(date?: string) {
   return useQuery({
     queryKey: ["balance", "daily", date],
     queryFn: () => fetchDailyBalance(date),
+    staleTime: 0, // Siempre refetch al montar — el balance cambia con cada apuesta
   });
 }
 

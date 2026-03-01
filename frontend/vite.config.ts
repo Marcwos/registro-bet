@@ -10,6 +10,16 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg"],
+      workbox: {
+        // No cachear llamadas a la API — siempre ir a red
+        navigateFallbackDenylist: [/^\/api/],
+        runtimeCaching: [
+          {
+            urlPattern: /\/api\//,
+            handler: "NetworkOnly",
+          },
+        ],
+      },
       manifest: {
         name: "RegistroBet",
         short_name: "RegistroBet",
