@@ -17,6 +17,7 @@ import { getApiErrorMessage } from "@/shared/lib/api-error";
 const loginSchema = z.object({
   email: z.email("Ingresa un email valido"),
   password: z.string().min(1, "La contrasena es obligatoria"),
+  remember_me: z.boolean(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -37,6 +38,9 @@ export function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      remember_me: false,
+    },
   });
 
   function onSubmit(data: LoginFormData) {
@@ -124,6 +128,22 @@ export function LoginPage() {
                 {errors.password.message}
               </p>
             )}
+          </div>
+
+          {/* Recordarme */}
+          <div className="flex items-center gap-2">
+            <input
+              {...register("remember_me")}
+              type="checkbox"
+              id="remember_me"
+              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            <label
+              htmlFor="remember_me"
+              className="text-sm text-slate-600 select-none"
+            >
+              Recordarme
+            </label>
           </div>
 
           {/* Submit */}

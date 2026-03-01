@@ -77,6 +77,7 @@ class LoginUser:
         access_token = self.token_provider.generate_access_token(
             user_id=user.id.value,
             role=user.role.value,
+            email=user.email.value,
         )
 
         if self.audit_service:

@@ -76,6 +76,7 @@ class RefreshToken:
         new_access_token = self.token_provider.generate_access_token(
             user_id=user.id.value,
             role=user.role.value,
+            email=user.email.value,
         )
 
         return RefreshResult(access_token=new_access_token, refresh_token=new_refresh_token)

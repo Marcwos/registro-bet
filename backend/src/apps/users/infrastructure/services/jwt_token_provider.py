@@ -16,11 +16,12 @@ class JwtTokenProvider(TokenProvider):
         self.access_token_lifetime = timedelta(minutes=30)
         self.refresh_token_lifetime = timedelta(days=7)
 
-    def generate_access_token(self, user_id: UUID, role: str) -> str:
+    def generate_access_token(self, user_id: UUID, role: str, email: str = "") -> str:
         now = datetime.now(UTC)
         payload = {
             "sub": str(user_id),  # subject = quien es
             "role": role,  # que permiso tiene
+            "email": email,  # email del usuario
             "type": "access",  # tipo de token
             "iat": now,  # cuando se creo
             "exp": now + self.access_token_lifetime,  # cuando expira

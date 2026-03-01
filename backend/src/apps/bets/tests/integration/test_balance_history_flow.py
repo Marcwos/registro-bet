@@ -5,7 +5,7 @@ Estos tests golpean la API real contra una BD PostgreSQL temporal.
 No usan mocks: view → use case → repository → BD → respuesta.
 """
 
-from datetime import date
+from datetime import UTC, datetime
 
 import pytest
 from django.core.management import call_command
@@ -46,7 +46,7 @@ class TestDailyBalanceIntegration:
     def test_daily_balance(self, authenticated_client):
         """Balance diario → cálculo real desde BD."""
         client, _, _ = authenticated_client
-        today = date.today().isoformat()
+        today = datetime.now(UTC).date().isoformat()
 
         # Crear 2 apuestas y resolver una como ganada
         r1 = _create_bet(client, stake_amount="10.00", odds="2.00", profit_expected="20.00")
@@ -106,7 +106,7 @@ class TestBetHistoryIntegration:
     def test_history_with_date_range(self, authenticated_client):
         """Historial con filtro por rango → summary correcto."""
         client, _, _ = authenticated_client
-        today = date.today().isoformat()
+        today = datetime.now(UTC).date().isoformat()
 
         # Crear apuestas
         _create_bet(client, stake_amount="10.00", odds="2.00", profit_expected="20.00")

@@ -6,7 +6,7 @@ from uuid import UUID
 
 class TokenProvider(ABC):
     @abstractmethod
-    def generate_access_token(self, user_id: UUID, role: str) -> str:
+    def generate_access_token(self, user_id: UUID, role: str, email: str = "") -> str:
         """Genera un access token de vida corta"""
 
     @abstractmethod
