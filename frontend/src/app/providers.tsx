@@ -1,22 +1,9 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "@/features/auth/hooks/use-auth-store";
 import { useTheme } from "@/shared/hooks/use-theme";
-
-/**
- * QueryClient es el "cerebro" de TanStack Query.
- * Maneja cache de datos del servidor, refetch automatico, y reintentos.
- */
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1, // Reintenta 1 vez si falla una peticion
-      staleTime: 5 * 60 * 1000, // Datos "frescos" por 5 min (no refetch innecesario)
-      refetchOnWindowFocus: false, // No refetch al volver a la pestana
-    },
-  },
-});
+import { queryClient } from "./query-client";
 
 /**
  * Envuelve toda la app con los providers necesarios:

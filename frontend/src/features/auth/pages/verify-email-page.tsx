@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router";
 import { CheckCircle, Loader2, RotateCw } from "lucide-react";
 import {
@@ -21,9 +21,19 @@ export function VerifyEmailPage() {
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [verified, setVerified] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const hasSentRef = useRef(false);
 
   const verifyMutation = useVerifyEmail();
   const sendMutation = useSendVerification();
+
+  // Enviar codigo automaticamente al cargar la pagina
+  useEffect(() => {
+    if (userId && !hasSentRef.current) {
+      hasSentRef.current = true;
+      sendMutation.mutate({ user_id: userId });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   // Maneja input de cada digito
   function handleChange(index: number, value: string) {

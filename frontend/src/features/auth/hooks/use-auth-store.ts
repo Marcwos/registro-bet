@@ -3,6 +3,16 @@ import { create } from "zustand";
 import { env } from "@/config/env";
 import type { User } from "../types";
 
+// Import lazy para evitar dependencia circular
+let _queryClient: { removeQueries: () => void } | null = null;
+async function getQueryClient() {
+  if (!_queryClient) {
+    const mod = await import("@/app/query-client");
+    _queryClient = mod.queryClient;
+  }
+  return _queryClient;
+}
+
 /**
  * Store global de autenticacion (Zustand).
  *
@@ -50,6 +60,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     set({ user: null, isAuthenticated: false });
+
+    // Limpia cache de React Query para evitar mostrar datos del usuario anterior
+    getQueryClient().then((qc) => qc.removeQueries());
   },
 
   hydrate: () => {

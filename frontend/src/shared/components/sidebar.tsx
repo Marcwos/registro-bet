@@ -93,7 +93,7 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar — hidden on mobile */}
-      <aside className="fixed left-0 top-0 hidden h-screen w-64 flex-col border-r border-slate-200 bg-white lg:flex dark:border-slate-700 dark:bg-slate-800">
+      <aside className="fixed left-0 top-0 hidden h-dvh w-64 flex-col border-r border-slate-200 bg-white lg:flex dark:border-slate-700 dark:bg-slate-800">
         {sidebarContent}
       </aside>
 
@@ -111,7 +111,7 @@ export function Sidebar() {
             />
             {/* Slide-in panel */}
             <motion.aside
-              className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white lg:hidden dark:border-slate-700 dark:bg-slate-800"
+              className="fixed left-0 top-0 z-50 flex h-dvh w-64 flex-col border-r border-slate-200 bg-white lg:hidden dark:border-slate-700 dark:bg-slate-800"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
