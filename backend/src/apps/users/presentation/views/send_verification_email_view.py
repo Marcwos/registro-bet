@@ -32,6 +32,9 @@ class SendVerificationEmailView(APIView):
         serializer = SendVerificationRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user_id = serializer.validated_data["user_id"]
+
+        # Validaciones rapidas (sincrono) — solo verificar usuario y cooldown
         use_case = SendVerificationEmail(
             user_repository=DjangoUserRepository(),
             verification_repository=DjangoEmailVerificationRepository(),
@@ -39,7 +42,7 @@ class SendVerificationEmailView(APIView):
             code_generator=RandomVerficationCodeGnerator(),
         )
         try:
-            use_case.execute(user_id=serializer.validated_data["user_id"])
+            use_case.execute(user_id=user_id)
         except UserNotFoundException as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         except EmailAlreadyVerifiedException as e:

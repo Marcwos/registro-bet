@@ -187,6 +187,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_TIMEOUT = 10  # segundos, evita que el worker se cuelgue
 
 # SendGrid (cuando EMAIL_PROVIDER=sendgrid)
 SENDGRID_API_KEY = config("SENDGRID_API_KEY", default="")

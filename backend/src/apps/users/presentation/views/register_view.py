@@ -68,6 +68,7 @@ class RegisterView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         # 4. Enviar email de verificacion automaticamente
+        #    EMAIL_TIMEOUT en settings protege contra conexiones SMTP colgadas
         try:
             send_email_use_case = SendVerificationEmail(
                 user_repository=repository,
@@ -77,7 +78,7 @@ class RegisterView(APIView):
             )
             send_email_use_case.execute(user_id=str(user.id.value))
         except Exception:
-            # Si falla el envio del email, no bloqueamos el registro.
+            # Si falla el envio (timeout, SMTP error, etc.), no bloqueamos el registro.
             # El usuario puede reenviar desde la pantalla de verificacion.
             logger.exception("Error al enviar email de verificacion durante el registro")
 
