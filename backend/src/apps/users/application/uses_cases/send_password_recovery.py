@@ -56,9 +56,13 @@ class SendPasswordRecovery:
         )
         self.verification_repository.save(verification)
 
-        # 4. Enviar email
+        # 4. Enviar email con plantilla HTML
+        from ...infrastructure.services.email_templates import build_recovery_email
+
+        subject, plain, html = build_recovery_email(code)
         self.email_sender.send(
             to=user.email.value,
-            subject="Recupera tu contraseña - Registro bet",
-            body=f"Tu codigo de recuperacion es: {code}\n\nExpira en 10 minutos.",
+            subject=subject,
+            body=plain,
+            html_body=html,
         )

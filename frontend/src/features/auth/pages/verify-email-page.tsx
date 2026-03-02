@@ -38,12 +38,12 @@ export function VerifyEmailPage() {
 
   const startCooldown = useCallback(() => setCooldown(COOLDOWN_SECONDS), []);
 
-  // Enviar codigo automaticamente al cargar la pagina
+  // El email se envia desde el backend al registrar.
+  // Solo iniciamos el cooldown para que el boton de reenvio no este habilitado de inmediato.
   useEffect(() => {
     if (userId && !hasSentRef.current) {
       hasSentRef.current = true;
       startCooldown();
-      sendMutation.mutate({ user_id: userId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);

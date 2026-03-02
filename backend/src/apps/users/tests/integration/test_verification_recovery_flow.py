@@ -31,11 +31,15 @@ def _extract_code(captured_output: str) -> str:
 class TestSendVerificationIntegration:
     def test_send_verification_code(self, api_client, register_user, capsys):
         """Enviar código de verificación → 200, código guardado en BD."""
-        # 1. Registrar usuario
+        # 1. Registrar usuario (ahora envía email automáticamente)
         reg = register_user(email="verify@example.com")
         user_id = reg.data["id"]
 
-        # 2. Solicitar código de verificación
+        # 2. Limpiar verificación creada en registro para evitar cooldown
+        capsys.readouterr()  # limpiar salida del registro
+        EmailVerificationModel.objects.filter(user_id=user_id).delete()
+
+        # 3. Solicitar código de verificación
         response = api_client.post(
             "/api/users/send-verification/",
             {"user_id": user_id},
@@ -65,16 +69,11 @@ class TestSendVerificationIntegration:
 class TestVerifyEmailIntegration:
     def test_verify_email_with_correct_code(self, api_client, register_user, capsys):
         """Verificar email con código correcto → 200, is_email_verified=True en BD."""
-        # 1. Registrar usuario
+        # 1. Registrar usuario (envía código automáticamente)
         reg = register_user(email="toverify@example.com")
         user_id = reg.data["id"]
 
-        # 2. Enviar código de verificación
-        api_client.post(
-            "/api/users/send-verification/",
-            {"user_id": user_id},
-            format="json",
-        )
+        # 2. Extraer código enviado durante el registro
         code = _extract_code(capsys.readouterr().out)
 
         # 3. Verificar email con el código correcto
@@ -92,17 +91,10 @@ class TestVerifyEmailIntegration:
 
     def test_verify_email_with_invalid_code(self, api_client, register_user, capsys):
         """Verificar email con código incorrecto → 400."""
-        # 1. Registrar usuario
+        # 1. Registrar usuario (envía código automáticamente)
         reg = register_user(email="badcode@example.com")
         user_id = reg.data["id"]
-
-        # 2. Enviar código de verificación (lo descartamos)
-        api_client.post(
-            "/api/users/send-verification/",
-            {"user_id": user_id},
-            format="json",
-        )
-        capsys.readouterr()  # limpiar salida
+        capsys.readouterr()  # limpiar salida del registro
 
         # 3. Intentar verificar con código incorrecto
         response = api_client.post(
@@ -123,6 +115,8 @@ class TestVerifyEmailIntegration:
 class TestPasswordRecoveryIntegration:
     def test_request_password_recovery(self, api_client, verified_user, capsys):
         """Solicitar recuperación → 200 (no revela si el email existe)."""
+        capsys.readouterr()  # limpiar salida del registro
+
         # 1. Solicitar recuperación para un email existente
         response = api_client.post(
             "/api/users/recover-password/",
@@ -153,6 +147,7 @@ class TestPasswordRecoveryIntegration:
 class TestResetPasswordIntegration:
     def test_reset_password_with_valid_code(self, api_client, verified_user, capsys):
         """Reset password → contraseña cambiada, sesiones invalidadas."""
+        capsys.readouterr()  # limpiar salida del registro
         email = verified_user["email"]
         old_password = verified_user["password"]
 

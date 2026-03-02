@@ -1,3 +1,5 @@
+import logging
+
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -7,10 +9,16 @@ from src.apps.audit.infrastructure.repositories.django_audit_log_repository impo
 from src.apps.audit.infrastructure.services.default_audit_service import DefaultAuditService
 
 from ...application.uses_cases.register_user import RegisterUser
+from ...application.uses_cases.send_verification_email import SendVerificationEmail
 from ...domain.exceptions import UserAlreadyExistsException
+from ...infrastructure.repositories.django_email_verification_repository import DjangoEmailVerificationRepository
 from ...infrastructure.repositories.django_user_repository import DjangoUserRepository
 from ...infrastructure.services.bcrypt_password_hasher import BcryptPasswordHasher
+from ...infrastructure.services.email_sender_factory import get_email_sender
+from ...infrastructure.services.random_verification_code_generator import RandomVerficationCodeGnerator
 from ..serializers.register_serializer import RegisterRequestSerializer, RegisterResponseSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(APIView):
@@ -59,7 +67,21 @@ class RegisterView(APIView):
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 4. Formatear respuesta
+        # 4. Enviar email de verificacion automaticamente
+        try:
+            send_email_use_case = SendVerificationEmail(
+                user_repository=repository,
+                verification_repository=DjangoEmailVerificationRepository(),
+                email_sender=get_email_sender(),
+                code_generator=RandomVerficationCodeGnerator(),
+            )
+            send_email_use_case.execute(user_id=str(user.id.value))
+        except Exception:
+            # Si falla el envio del email, no bloqueamos el registro.
+            # El usuario puede reenviar desde la pantalla de verificacion.
+            logger.exception("Error al enviar email de verificacion durante el registro")
+
+        # 5. Formatear respuesta
         response_data = {
             "id": user.id.value,
             "email": user.email.value,

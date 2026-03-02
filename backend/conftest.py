@@ -12,8 +12,9 @@ from src.apps.users.infrastructure.models.user_model import UserModel
 
 
 @pytest.fixture(autouse=True)
-def _disable_sendgrid(settings):
+def _force_console_email(settings):
     """Fuerza ConsoleEmailSender en todos los tests (no enviar emails reales)."""
+    settings.EMAIL_PROVIDER = "console"
     settings.SENDGRID_API_KEY = ""
 
 

@@ -59,9 +59,13 @@ class SendVerificationEmail:
         )
         self.verification_repository.save(verification)
 
-        # 6. Enviar email (el codigo en texto plano solo viaja al correo)
+        # 6. Enviar email con plantilla HTML
+        from ...infrastructure.services.email_templates import build_verification_email
+
+        subject, plain, html = build_verification_email(code)
         self.email_sender.send(
             to=user.email.value,
-            subject="Verifica tu - Registro Bet",
-            body=f"Tu codigo de verificacion es: {code}\n\nExpira en 10 minutos.",
+            subject=subject,
+            body=plain,
+            html_body=html,
         )
