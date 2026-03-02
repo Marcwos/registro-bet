@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router";
-import { CheckCircle, Loader2, RotateCw } from "lucide-react";
+import { CheckCircle, Loader2, RotateCw, MailWarning } from "lucide-react";
 import {
   useSendVerification,
   useVerifyEmail,
@@ -11,6 +11,7 @@ import { Button } from "@/shared/components/button";
 import { getApiErrorMessage } from "@/shared/lib/api-error";
 
 const CODE_LENGTH = 6;
+const COOLDOWN_SECONDS = 30;
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
@@ -20,16 +21,28 @@ export function VerifyEmailPage() {
 
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [verified, setVerified] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const hasSentRef = useRef(false);
 
   const verifyMutation = useVerifyEmail();
   const sendMutation = useSendVerification();
 
+  // Countdown timer
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
+
+  const startCooldown = useCallback(() => setCooldown(COOLDOWN_SECONDS), []);
+
   // Enviar codigo automaticamente al cargar la pagina
   useEffect(() => {
     if (userId && !hasSentRef.current) {
       hasSentRef.current = true;
+      startCooldown();
       sendMutation.mutate({ user_id: userId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +99,11 @@ export function VerifyEmailPage() {
   }
 
   function handleResend() {
-    sendMutation.mutate({ user_id: userId });
+    startCooldown();
+    setIsResending(true);
+    sendMutation.mutate({ user_id: userId }, {
+      onSettled: () => setIsResending(false),
+    });
   }
 
   // Pantalla de exito
@@ -182,17 +199,19 @@ export function VerifyEmailPage() {
             <button
               type="button"
               onClick={handleResend}
-              disabled={sendMutation.isPending}
+              disabled={isResending || cooldown > 0}
               className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
             >
-              {sendMutation.isPending ? (
+              {isResending && cooldown <= 0 ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <RotateCw className="h-3.5 w-3.5" />
               )}
-              Reenviar codigo
+              {cooldown > 0
+                ? `Reenviar codigo (${cooldown}s)`
+                : "Reenviar codigo"}
             </button>
-            {sendMutation.isSuccess && (
+            {sendMutation.isSuccess && cooldown <= 0 && (
               <p className="mt-2 text-sm text-emerald-600 dark:text-emerald-400">
                 Codigo reenviado exitosamente
               </p>
@@ -202,6 +221,14 @@ export function VerifyEmailPage() {
                 {getApiErrorMessage(sendMutation.error)}
               </p>
             )}
+          </div>
+
+          {/* Aviso de spam */}
+          <div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
+            <MailWarning className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+            <p className="text-xs leading-relaxed text-amber-700 dark:text-amber-400">
+              ¿No encuentras el correo? Revisa tu carpeta de <strong>spam</strong> o correo no deseado.
+            </p>
           </div>
         </div>
       </Card>
