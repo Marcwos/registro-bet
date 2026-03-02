@@ -16,6 +16,7 @@ const statusOptions = [
 
 // ─── Schema de validacion ───────────────────────────────
 const betSchema = z.object({
+  title: z.string().optional(),
   stake_amount: z
     .string()
     .min(1, "El monto es requerido")
@@ -38,6 +39,7 @@ interface BetFormProps {
   /** Catálogo de estados — si se pasa junto a bet, muestra selector de estado */
   statuses?: BetStatus[];
   onSubmit: (data: {
+    title?: string;
     stake_amount: number;
     odds: number;
     profit_expected: number;
@@ -55,6 +57,7 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
   } = useForm<BetFormData>({
     resolver: zodResolver(betSchema),
     defaultValues: {
+      title: bet ? bet.title : "",
       stake_amount: bet ? bet.stake_amount : "",
       odds: bet ? bet.odds : "",
       profit_expected: bet ? bet.profit_expected : "",
@@ -69,6 +72,7 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
 
   const handleFormSubmit = (data: BetFormData) => {
     onSubmit({
+      ...(data.title?.trim() ? { title: data.title.trim() } : {}),
       stake_amount: Number(data.stake_amount),
       odds: Number(data.odds),
       profit_expected: Number(data.profit_expected),
@@ -85,6 +89,14 @@ export function BetForm({ bet, statuses, onSubmit, isLoading, error }: BetFormPr
           {error}
         </div>
       )}
+
+      {/* Pick / Título */}
+      <Input
+        label="Pick"
+        type="text"
+        placeholder="Ej: Gana Equipo, +2.5 goles…"
+        {...register("title")}
+      />
 
       {/* Monto y Cuota en fila */}
       <div className="grid grid-cols-2 gap-4">

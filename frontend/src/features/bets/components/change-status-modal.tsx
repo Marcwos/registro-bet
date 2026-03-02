@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Modal } from "@/shared/components/modal";
 import { Button } from "@/shared/components/button";
-import { Input } from "@/shared/components/input";
 import type { Bet } from "../types";
 
 interface ChangeStatusModalProps {
@@ -26,20 +25,15 @@ export function ChangeStatusModal({
   isLoading,
 }: ChangeStatusModalProps) {
   const [selected, setSelected] = useState<string | null>(null);
-  const [profitFinal, setProfitFinal] = useState("");
 
   const handleConfirm = () => {
     if (!selected) return;
-    onConfirm(
-      selected,
-      selected === "won" && profitFinal ? Number(profitFinal) : null,
-    );
+    onConfirm(selected, null);
   };
 
   // Reset al abrir/cerrar
   const handleClose = () => {
     setSelected(null);
-    setProfitFinal("");
     onClose();
   };
 
@@ -68,18 +62,6 @@ export function ChangeStatusModal({
             </button>
           ))}
         </div>
-
-        {/* Campo profit_final solo para "Ganada" */}
-        {selected === "won" && (
-          <Input
-            label="Ganancia final (opcional)"
-            type="number"
-            step="0.01"
-            placeholder="Deja vacio para calcular automaticamente"
-            value={profitFinal}
-            onChange={(e) => setProfitFinal(e.target.value)}
-          />
-        )}
 
         {/* Acciones */}
         <div className="flex justify-end gap-3 pt-2">

@@ -60,6 +60,11 @@ class UpdateBet:
         if "description" in updates:
             bet.description = updates["description"].strip()
 
+        if "title" in updates:
+            new_title = updates["title"].strip()
+            if new_title:
+                bet.title = new_title
+
         bet.updated_at = datetime.now(UTC)
         self.bet_repository.save(bet)
         return bet

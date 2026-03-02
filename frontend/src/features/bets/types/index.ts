@@ -18,6 +18,7 @@ export interface Bet {
 }
 
 export interface CreateBetRequest {
+  title?: string;
   stake_amount: number;
   odds: number;
   profit_expected: number;
@@ -29,6 +30,7 @@ export interface CreateBetRequest {
 }
 
 export interface UpdateBetRequest {
+  title?: string;
   stake_amount?: number;
   odds?: number;
   profit_expected?: number;

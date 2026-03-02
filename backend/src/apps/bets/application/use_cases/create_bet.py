@@ -33,6 +33,7 @@ class CreateBet:
         sport_id: UUID | None = None,
         category_id: UUID | None = None,
         description: str = "",
+        title: str = "",
         tz_name: str | None = None,
         tz_offset_minutes: int = 0,
     ) -> Bet:
@@ -70,7 +71,9 @@ class CreateBet:
         else:
             local_date = bet_placed_at.date()
             count = self.bet_repository.count_by_user_and_date(user_id, local_date)
-        title = f"Apuesta {count + 1}"
+
+        # Priorizar titulo del usuario; fallback a auto-generado
+        title = title.strip() if title and title.strip() else f"Apuesta {count + 1}"
 
         bet = Bet(
             id=uuid4(),

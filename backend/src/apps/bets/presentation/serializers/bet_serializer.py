@@ -4,6 +4,7 @@ from rest_framework import serializers
 class CreateBetRequestSerializer(serializers.Serializer):
     """Valida datos de entrada para crear una apuesta"""
 
+    title = serializers.CharField(max_length=255, required=False, default="", allow_blank=True)
     stake_amount = serializers.DecimalField(max_digits=12, decimal_places=2)
     odds = serializers.DecimalField(max_digits=8, decimal_places=2)
     profit_expected = serializers.DecimalField(max_digits=12, decimal_places=2)
@@ -17,6 +18,7 @@ class CreateBetRequestSerializer(serializers.Serializer):
 class UpdateBetRequestSerializer(serializers.Serializer):
     """Valida datos de entrada para actualizar una apuesta"""
 
+    title = serializers.CharField(max_length=255, required=False, allow_blank=True)
     stake_amount = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
     odds = serializers.DecimalField(max_digits=8, decimal_places=2, required=False)
     profit_expected = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
