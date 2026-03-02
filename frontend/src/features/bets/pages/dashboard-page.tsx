@@ -135,6 +135,7 @@ export function DashboardPage() {
           trend={getTrend(netProfit)}
           index={0}
           className="col-span-2 md:col-span-1"
+          tooltip="El dinero real que has ganado o perdido (ya descontando lo que apostaste)."
         />
         <StatCard
           label="Retorno total"
@@ -142,6 +143,7 @@ export function DashboardPage() {
           icon={Wallet}
           trend="neutral"
           index={1}
+          tooltip="Todo el dinero que ha regresado a tu cuenta (incluye tus ganancias más el dinero que apostaste inicialmente)."
         />
         <StatCard
           label="Total apostado"
@@ -149,6 +151,7 @@ export function DashboardPage() {
           icon={DollarSign}
           trend="neutral"
           index={2}
+          tooltip="La suma de todo el dinero que has arriesgado en tus apuestas."
         />
       </div>
 

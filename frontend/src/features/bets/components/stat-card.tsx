@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
+import { Tooltip } from "@/shared/components/tooltip";
 
 interface StatCardProps {
   label: string;
@@ -10,6 +11,8 @@ interface StatCardProps {
   index?: number;
   /** Extra classes (e.g. col-span for grid placement) */
   className?: string;
+  /** Texto informativo que aparece al hacer hover/tap en el icono (i) */
+  tooltip?: string;
 }
 
 const trendStyles = {
@@ -24,7 +27,7 @@ const trendBg = {
   neutral: "bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700",
 };
 
-export function StatCard({ label, value, icon: Icon, trend = "neutral", index = 0, className = "" }: StatCardProps) {
+export function StatCard({ label, value, icon: Icon, trend = "neutral", index = 0, className = "", tooltip }: StatCardProps) {
   return (
     <motion.div
       className={`rounded-2xl border p-3 shadow-sm md:p-6 ${trendBg[trend]} ${className}`}
@@ -33,7 +36,10 @@ export function StatCard({ label, value, icon: Icon, trend = "neutral", index = 
       transition={{ duration: 0.3, delay: index * 0.08 }}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="min-w-0 truncate text-xs font-medium text-slate-500 md:text-sm dark:text-slate-400">{label}</p>
+        <div className="flex min-w-0 items-center gap-1">
+          <p className="min-w-0 truncate text-xs font-medium text-slate-500 md:text-sm dark:text-slate-400">{label}</p>
+          {tooltip && <Tooltip content={tooltip} />}
+        </div>
         <div className={`shrink-0 rounded-lg p-1.5 md:p-2 ${trendStyles[trend]}`}>
           <Icon className="h-4 w-4 md:h-5 md:w-5" />
         </div>

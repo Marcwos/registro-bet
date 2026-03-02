@@ -297,24 +297,28 @@ export function HistoryPage() {
               value={formatMoney(netProfit)}
               icon={TrendingUp}
               trend={getTrend(netProfit)}
+              tooltip="Tu balance final en este rango de fechas. Es la diferencia entre lo que ganaste y lo que perdiste."
             />
             <StatCard
               label="Total apostado"
               value={`$${totalStaked.toFixed(2)}`}
               icon={DollarSign}
               trend="neutral"
+              tooltip="Todo el dinero que pusiste en juego durante este periodo, sumando todas tus apuestas."
             />
             <StatCard
               label="Total ganado"
               value={formatMoney(totalWon)}
               icon={TrendingUp}
               trend={getTrend(totalWon)}
+              tooltip="La ganancia limpia que obtuviste únicamente de las apuestas ganadoras."
             />
             <StatCard
               label="Total perdido"
               value={formatMoney(-totalLost)}
               icon={TrendingDown}
               trend={totalLost > 0 ? "negative" : "neutral"}
+              tooltip="El dinero que arriesgaste y no recuperaste en las apuestas perdedoras."
             />
           </div>
 
