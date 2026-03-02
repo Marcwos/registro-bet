@@ -28,7 +28,7 @@ class TestRegisterUserWithAudit:
         self.user_repo = Mock(spec=UserRepository)
         self.hasher = Mock(spec=PasswordHasher)
         self.audit_service = Mock(spec=AuditService)
-        self.user_repo.exists_by_email.return_value = False
+        self.user_repo.get_by_email.return_value = None
         self.hasher.hash.return_value = "hashed_password"
 
     def test_register_logs_audit_event(self):

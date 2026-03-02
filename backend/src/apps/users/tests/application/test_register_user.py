@@ -65,12 +65,12 @@ class TestRegisterUser:
     def test_register_user_successfully(self):
         """
         Escenario: El usuario se registra correctamente.
-        Condición: El email NO existe en el sistema.
+        Condicion: El email NO existe en el sistema.
         Resultado esperado: Se crea un User y se guarda en el repositorio.
         """
         # ARRANGE ─────────────────────────────────────────────
-        # Configuramos el mock: "cuando pregunten si existe este email, dí que NO"
-        self.user_repo.exists_by_email.return_value = False
+        # Configuramos el mock: "cuando busquen este email, devuelve None (no existe)"
+        self.user_repo.get_by_email.return_value = None
         # Configuramos el hasher: "cuando hasheen un password, devuelve este string"
         self.password_hasher.hash.return_value = "hashed_abc123"
 
@@ -100,11 +100,13 @@ class TestRegisterUser:
 
     def test_register_fails_when_email_already_exists(self):
         """
-        Escenario: El email ya está registrado.
+        Escenario: El email ya está registrado y verificado.
         Resultado esperado: Se lanza UserAlreadyExistsException y NO se guarda nada.
         """
-        # ARRANGE
-        self.user_repo.exists_by_email.return_value = True  # ← "sí, ya existe"
+        # ARRANGE: simular usuario verificado existente
+        existing_user = Mock(spec=User)
+        existing_user.is_email_verified = True
+        self.user_repo.get_by_email.return_value = existing_user
 
         # ACT + ASSERT ────────────────────────────────────────
         # pytest.raises() verifica que se lance EXACTAMENTE esta excepción
@@ -123,7 +125,7 @@ class TestRegisterUser:
         Pero el test verifica que el caso de uso propaga el error correctamente.
         """
         # ARRANGE
-        self.user_repo.exists_by_email.return_value = False
+        self.user_repo.get_by_email.return_value = None
 
         # ACT + ASSERT
         with pytest.raises(ValueError, match="formato del email"):

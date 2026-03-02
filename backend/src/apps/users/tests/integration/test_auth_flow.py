@@ -37,7 +37,7 @@ class TestRegisterIntegration:
         assert str(user.id) == response.data["id"]
 
     def test_register_duplicate_email(self, api_client):
-        """Registro con email duplicado → 409."""
+        """Registro con email ya verificado → 409."""
         # Primer registro
         api_client.post(
             "/api/users/register/",
@@ -45,7 +45,10 @@ class TestRegisterIntegration:
             format="json",
         )
 
-        # Segundo registro con mismo email
+        # Verificar el email manualmente para simular usuario completo
+        UserModel.objects.filter(email="duplicado@example.com").update(is_email_verified=True)
+
+        # Segundo registro con mismo email verificado
         response = api_client.post(
             "/api/users/register/",
             {"email": "duplicado@example.com", "password": "otherpass123"},
@@ -53,6 +56,25 @@ class TestRegisterIntegration:
         )
 
         assert response.status_code == 409
+
+    def test_register_duplicate_unverified_email_allows_reregister(self, api_client):
+        """Registro con email no verificado → 201 (permite re-registro)."""
+        # Primer registro (no verificado)
+        api_client.post(
+            "/api/users/register/",
+            {"email": "nocheck@example.com", "password": "securepass123"},
+            format="json",
+        )
+
+        # Segundo registro con mismo email no verificado → se actualiza
+        response = api_client.post(
+            "/api/users/register/",
+            {"email": "nocheck@example.com", "password": "newpass456"},
+            format="json",
+        )
+
+        assert response.status_code == 201
+        assert response.data["email"] == "nocheck@example.com"
 
 
 # ──────────────────────────────────────────────────────────────
@@ -63,7 +85,7 @@ class TestRegisterIntegration:
 @pytest.mark.django_db
 class TestLoginIntegration:
     def test_login_unverified_email_returns_403(self, api_client, register_user):
-        """Login sin verificar email → 403."""
+        """Login sin verificar email → 403 con user_id y email."""
         register_user(email="unverified@example.com")
 
         response = api_client.post(
@@ -73,6 +95,8 @@ class TestLoginIntegration:
         )
 
         assert response.status_code == 403
+        assert "user_id" in response.data
+        assert response.data["email"] == "unverified@example.com"
 
     def test_login_invalid_credentials_returns_401(self, api_client, verified_user):
         """Login con contraseña incorrecta → 401."""

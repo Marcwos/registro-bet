@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useLogin } from "../hooks/use-login";
 import { AuthHeader } from "../components/auth-header";
 import { Card } from "@/shared/components/card";
 import { Button } from "@/shared/components/button";
 import { getApiErrorMessage } from "@/shared/lib/api-error";
+import axios from "axios";
 
 /**
  * Esquema de validacion con Zod.
@@ -25,6 +26,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const loginMutation = useLogin();
+  const navigate = useNavigate();
 
   /**
    * react-hook-form maneja:
@@ -44,7 +46,19 @@ export function LoginPage() {
   });
 
   function onSubmit(data: LoginFormData) {
-    loginMutation.mutate(data);
+    loginMutation.mutate(data, {
+      onError: (error) => {
+        // Si el email no esta verificado, redirigir a verificacion
+        if (
+          axios.isAxiosError(error) &&
+          error.response?.status === 403 &&
+          error.response.data?.user_id
+        ) {
+          const { user_id, email } = error.response.data;
+          navigate(`/verify-email?userId=${user_id}&email=${encodeURIComponent(email)}`);
+        }
+      },
+    });
   }
 
   return (

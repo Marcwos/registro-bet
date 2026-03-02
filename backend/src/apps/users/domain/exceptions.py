@@ -33,7 +33,9 @@ class SessionRevokedException(DomainException):
 
 
 class EmailNotVerifiedException(DomainException):
-    def __init__(self):
+    def __init__(self, user_id: str = "", email: str = ""):
+        self.user_id = user_id
+        self.email = email
         super().__init__("Debes verificar tu email antes de iniciar sesion")
 
 

@@ -11,7 +11,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![SonarCloud](https://img.shields.io/badge/SonarCloud-Análisis-F3702A?logo=sonarcloud)](https://sonarcloud.io/)
 
-[Demo en vivo](https://registro-bet.vercel.app) · [API](https://registro-bet.onrender.com/api/)
+[Demo en vivo](https://registro-bet.vercel.app)
 
 </div>
 

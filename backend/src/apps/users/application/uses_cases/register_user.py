@@ -26,8 +26,16 @@ class RegisterUser:
     def execute(self, email: str, password: str) -> User:
         email_vo = Email(email)
 
-        if self.user_repository.exists_by_email(email_vo):
-            raise UserAlreadyExistsException()
+        existing = self.user_repository.get_by_email(email_vo)
+        if existing is not None:
+            if existing.is_email_verified:
+                raise UserAlreadyExistsException()
+
+            # Email existe pero no verificado: actualizar contraseña para permitir re-registro
+            existing.password_hash = self.password_hasher.hash(password)
+            existing.updated_at = datetime.now(UTC)
+            self.user_repository.save(existing)
+            return existing
 
         user = User(
             id=UserId(uuid4()),

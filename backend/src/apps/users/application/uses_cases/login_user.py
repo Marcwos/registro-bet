@@ -54,7 +54,10 @@ class LoginUser:
 
         # 3. Verificar que el emai este verificado
         if not user.is_email_verified:
-            raise EmailNotVerifiedException()
+            raise EmailNotVerifiedException(
+                user_id=str(user.id.value),
+                email=user.email.value,
+            )
 
         # 4. Crear sesion
         session_id = uuid4()

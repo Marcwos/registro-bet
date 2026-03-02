@@ -48,7 +48,10 @@ class LoginView(APIView):
         except InvalidCredentialsException as e:
             return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         except EmailNotVerifiedException as e:
-            return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": str(e), "user_id": e.user_id, "email": e.email},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         response_serializer = LoginResponseSerializer(result)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
