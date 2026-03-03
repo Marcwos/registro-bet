@@ -34,29 +34,35 @@ class UpdateBet:
         if status and status.is_final and not confirm:
             raise BetNotEditableException()
 
-        # Aplicar actualizaciones
+        self._apply_updates(bet, updates)
+
+        # Validar exclusividad mutua bono/bonificacion
+        if bet.is_freebet and bet.is_boosted:
+            raise InvalidBetTypeException()
+
+        bet.updated_at = datetime.now(UTC)
+        self.bet_repository.save(bet)
+        return bet
+
+    def _apply_updates(self, bet: Bet, updates: dict) -> None:
+        """Aplica las actualizaciones al dominio validando value objects."""
         if "stake_amount" in updates:
             try:
-                money = Money(amount=updates["stake_amount"])
+                bet.stake_amount = Money(amount=updates["stake_amount"])
             except ValueError as e:
                 raise InvalidStakeAmountException(str(e)) from e
-            bet.stake_amount = money
 
         if "odds" in updates:
             try:
-                bet_odds = Odds(value=updates["odds"])
+                bet.odds = Odds(value=updates["odds"])
             except ValueError as e:
                 raise InvalidOddsException(str(e)) from e
-            bet.odds = bet_odds
 
-        if "profit_expected" in updates:
-            bet.profit_expected = updates["profit_expected"]
-
-        if "profit_final" in updates:
-            bet.profit_final = updates["profit_final"]
-
-        if "placed_at" in updates:
-            bet.placed_at = updates["placed_at"]
+        # Campos simples sin validacion de VO
+        simple_fields = ("profit_expected", "profit_final", "placed_at", "is_freebet", "is_boosted")
+        for field in simple_fields:
+            if field in updates:
+                setattr(bet, field, updates[field])
 
         if "description" in updates:
             bet.description = updates["description"].strip()
@@ -65,17 +71,4 @@ class UpdateBet:
             new_title = updates["title"].strip()
             if new_title:
                 bet.title = new_title
-
-        if "is_freebet" in updates:
-            bet.is_freebet = updates["is_freebet"]
-
-        if "is_boosted" in updates:
-            bet.is_boosted = updates["is_boosted"]
-
-        # Validar exclusividad mutua bono/bonificacion
-        if bet.is_freebet and bet.is_boosted:
-            raise InvalidBetTypeException()
-
-        bet.updated_at = datetime.now(UTC)
-        self.bet_repository.save(bet)
         return bet
