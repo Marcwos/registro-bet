@@ -20,6 +20,8 @@ class Bet:
     sport_id: UUID | None
     category_id: UUID | None
     description: str
+    is_freebet: bool
+    is_boosted: bool
     placed_at: datetime
     settled_at: datetime | None
     created_at: datetime

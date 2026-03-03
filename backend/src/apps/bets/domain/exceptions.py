@@ -66,3 +66,8 @@ class InvalidProfitExpectedException(BetsDomainException):
         if detail:
             msg = f"{msg}: {detail}"
         super().__init__(msg)
+
+
+class InvalidBetTypeException(BetsDomainException):
+    def __init__(self):
+        super().__init__("Una apuesta no puede ser Bono (freebet) y tener Bonificación (boost) al mismo tiempo")

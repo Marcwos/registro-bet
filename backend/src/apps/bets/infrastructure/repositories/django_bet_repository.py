@@ -23,6 +23,8 @@ class DjangoBetRepository(BetRepository):
                     "sport_id",
                     "category_id",
                     "description",
+                    "is_freebet",
+                    "is_boosted",
                     "placed_at",
                     "settled_at",
                     "updated_at",

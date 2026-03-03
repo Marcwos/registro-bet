@@ -20,6 +20,7 @@ from ...domain.exceptions import (
     BetNotEditableException,
     BetNotFoundException,
     BetStatusNotFoundException,
+    InvalidBetTypeException,
     InvalidOddsException,
     InvalidProfitExpectedException,
     InvalidStakeAmountException,
@@ -49,6 +50,8 @@ def _bet_to_response(bet):
         "sport_id": bet.sport_id,
         "category_id": bet.category_id,
         "description": bet.description,
+        "is_freebet": bet.is_freebet,
+        "is_boosted": bet.is_boosted,
         "placed_at": bet.placed_at,
         "settled_at": bet.settled_at,
         "created_at": bet.created_at,
@@ -104,7 +107,12 @@ class BetListCreateView(APIView):
         try:
             use_case = CreateBet(bet_repo, status_repo)
             bet = use_case.execute(user_id=user_id, **serializer.validated_data, **tz_params)
-        except (InvalidStakeAmountException, InvalidOddsException, InvalidProfitExpectedException) as e:
+        except (
+            InvalidStakeAmountException,
+            InvalidOddsException,
+            InvalidProfitExpectedException,
+            InvalidBetTypeException,
+        ) as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except BetStatusNotFoundException as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -174,7 +182,7 @@ class BetDetailView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_403_FORBIDDEN)
         except BetNotEditableException as e:
             return Response({"error": str(e)}, status=status.HTTP_409_CONFLICT)
-        except (InvalidStakeAmountException, InvalidOddsException) as e:
+        except (InvalidStakeAmountException, InvalidOddsException, InvalidBetTypeException) as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(
