@@ -13,6 +13,8 @@ class CreateBetRequestSerializer(serializers.Serializer):
     sport_id = serializers.UUIDField(required=False, allow_null=True)
     category_id = serializers.UUIDField(required=False, allow_null=True)
     description = serializers.CharField(required=False, default="", allow_blank=True)
+    is_freebet = serializers.BooleanField(required=False, default=False)
+    is_boosted = serializers.BooleanField(required=False, default=False)
 
 
 class UpdateBetRequestSerializer(serializers.Serializer):
@@ -26,6 +28,8 @@ class UpdateBetRequestSerializer(serializers.Serializer):
     placed_at = serializers.DateTimeField(required=False)
     description = serializers.CharField(required=False, allow_blank=True)
     confirm = serializers.BooleanField(required=False, default=False)
+    is_freebet = serializers.BooleanField(required=False)
+    is_boosted = serializers.BooleanField(required=False)
 
 
 class ChangeBetStatusRequestSerializer(serializers.Serializer):
@@ -49,6 +53,8 @@ class BetResponseSerializer(serializers.Serializer):
     sport_id = serializers.UUIDField(allow_null=True)
     category_id = serializers.UUIDField(allow_null=True)
     description = serializers.CharField()
+    is_freebet = serializers.BooleanField()
+    is_boosted = serializers.BooleanField()
     placed_at = serializers.DateTimeField()
     settled_at = serializers.DateTimeField(allow_null=True)
     created_at = serializers.DateTimeField()

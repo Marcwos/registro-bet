@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 from ...domain.entities.bet import Bet
 from ...domain.exceptions import (
     BetStatusNotFoundException,
+    InvalidBetTypeException,
     InvalidOddsException,
     InvalidProfitExpectedException,
     InvalidStakeAmountException,
@@ -34,9 +35,15 @@ class CreateBet:
         category_id: UUID | None = None,
         description: str = "",
         title: str = "",
+        is_freebet: bool = False,
+        is_boosted: bool = False,
         tz_name: str | None = None,
         tz_offset_minutes: int = 0,
     ) -> Bet:
+        # Validar exclusividad mutua bono/bonificacion
+        if is_freebet and is_boosted:
+            raise InvalidBetTypeException()
+
         # Valida monto y couta con value Objects
         try:
             money = Money(amount=stake_amount)
@@ -87,6 +94,8 @@ class CreateBet:
             sport_id=sport_id,
             category_id=category_id,
             description=description.strip(),
+            is_freebet=is_freebet,
+            is_boosted=is_boosted,
             placed_at=bet_placed_at,
             settled_at=None,
             created_at=now,

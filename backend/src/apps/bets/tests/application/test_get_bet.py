@@ -42,6 +42,8 @@ class TestGetBet:
             sport_id=None,
             category_id=None,
             description="",
+            is_freebet=False,
+            is_boosted=False,
             placed_at=now,
             settled_at=None,
             created_at=now,

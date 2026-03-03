@@ -24,6 +24,7 @@ from ...domain.exceptions import (
     BetAccessDeniedException,
     BetNotEditableException,
     BetNotFoundException,
+    InvalidBetTypeException,
     InvalidStakeAmountException,
 )
 from ...domain.repositories.bet_repository import BetRepository
@@ -59,6 +60,8 @@ class TestUpdateBet:
             sport_id=None,
             category_id=None,
             description="",
+            is_freebet=False,
+            is_boosted=False,
             placed_at=now,
             settled_at=None,
             created_at=now,
@@ -161,3 +164,31 @@ class TestUpdateBet:
 
         with pytest.raises(BetAccessDeniedException):
             self.use_case.execute(bet_id=self.bet_id, user_id=uuid4(), description="test")
+
+    def test_update_bet_to_freebet(self):
+        """Actualiza apuesta pendiente a freebet."""
+        self.bet_repo.get_by_id.return_value = self.existing_bet
+        self.status_repo.get_by_id.return_value = self.pending_status
+
+        result = self.use_case.execute(
+            bet_id=self.bet_id,
+            user_id=self.user_id,
+            is_freebet=True,
+        )
+
+        assert result.is_freebet is True
+        assert result.is_boosted is False
+        self.bet_repo.save.assert_called_once()
+
+    def test_update_fails_with_both_freebet_and_boosted(self):
+        """Falla si se intenta marcar bono y bonificaci\u00f3n al mismo tiempo."""
+        self.bet_repo.get_by_id.return_value = self.existing_bet
+        self.status_repo.get_by_id.return_value = self.pending_status
+
+        with pytest.raises(InvalidBetTypeException):
+            self.use_case.execute(
+                bet_id=self.bet_id,
+                user_id=self.user_id,
+                is_freebet=True,
+                is_boosted=True,
+            )

@@ -27,7 +27,7 @@ def _make_status(code: str, is_final: bool) -> BetStatus:
     return BetStatus(id=uuid4(), name=code.capitalize(), code=code, is_final=is_final)
 
 
-def _make_bet(status_id, stake="10.00", profit_final=None) -> Bet:
+def _make_bet(status_id, stake="10.00", profit_final=None, is_freebet=False, is_boosted=False) -> Bet:
     now = datetime.now(UTC)
     stake_dec = Decimal(stake)
     odds_dec = Decimal("2.00")
@@ -43,6 +43,8 @@ def _make_bet(status_id, stake="10.00", profit_final=None) -> Bet:
         sport_id=None,
         category_id=None,
         description="",
+        is_freebet=is_freebet,
+        is_boosted=is_boosted,
         placed_at=now,
         settled_at=now if profit_final else None,
         created_at=now,
@@ -199,3 +201,66 @@ class TestBalanceCalculator:
         assert result["total_staked"] == Decimal("18.00")
         assert result["net_profit"] == Decimal("18.00")
         assert result["won_count"] == 3
+
+    # ─── Freebet (Bono) tests ────────────────────────────
+
+    def test_freebet_lost_does_not_subtract_stake(self):
+        """Freebet perdida: no resta stake del balance (no era dinero real)."""
+        bets = [
+            _make_bet(self.lost.id, stake="10.00", is_freebet=True),
+        ]
+
+        result = self.calculator.calculate(bets)
+
+        assert result["total_lost"] == Decimal("0.00")
+        assert result["net_profit"] == Decimal("0.00")
+        assert result["lost_count"] == 1
+        # Freebet no cuenta como dinero real apostado
+        assert result["total_staked"] == Decimal("0.00")
+
+    def test_freebet_won_calculates_profit_minus_stake(self):
+        """Freebet ganada: ganancia = profit_final - stake."""
+        bets = [
+            _make_bet(self.won.id, stake="10.00", profit_final="20.00", is_freebet=True),
+        ]
+
+        result = self.calculator.calculate(bets)
+
+        # return=20, profit = 20 - 10 = 10
+        assert result["total_won"] == Decimal("10.00")
+        assert result["total_return"] == Decimal("20.00")
+        assert result["won_count"] == 1
+
+    def test_boosted_bet_processed_as_normal(self):
+        """Apuesta con Bonificaci\u00f3n (boost) se procesa exactamente como apuesta normal."""
+        bets = [
+            _make_bet(self.won.id, stake="10.00", profit_final="30.00", is_boosted=True),
+        ]
+
+        result = self.calculator.calculate(bets)
+
+        # return=30, profit = 30 - 10 = 20
+        assert result["total_won"] == Decimal("20.00")
+        assert result["total_lost"] == Decimal("0.00")
+        assert result["total_return"] == Decimal("30.00")
+
+    def test_freebet_mixed_with_normal_bets(self):
+        """Mezcla de freebets y apuestas normales calcula correctamente."""
+        bets = [
+            _make_bet(self.won.id, stake="10.00", profit_final="20.00"),  # normal ganada
+            _make_bet(self.lost.id, stake="10.00", is_freebet=True),  # freebet perdida
+            _make_bet(self.lost.id, stake="5.00"),  # normal perdida
+            _make_bet(self.won.id, stake="10.00", profit_final="20.00", is_freebet=True),  # freebet ganada
+        ]
+
+        result = self.calculator.calculate(bets)
+
+        # Normal ganada: won += 10 (20-10)
+        # Freebet perdida: lost += 0
+        # Normal perdida: lost += 5
+        # Freebet ganada: won += 10 (20-10)
+        assert result["total_won"] == Decimal("20.00")
+        assert result["total_lost"] == Decimal("5.00")
+        assert result["net_profit"] == Decimal("15.00")
+        assert result["won_count"] == 2
+        assert result["lost_count"] == 2

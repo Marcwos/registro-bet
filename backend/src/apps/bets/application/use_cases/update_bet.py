@@ -6,6 +6,7 @@ from ...domain.exceptions import (
     BetAccessDeniedException,
     BetNotEditableException,
     BetNotFoundException,
+    InvalidBetTypeException,
     InvalidOddsException,
     InvalidStakeAmountException,
 )
@@ -64,6 +65,16 @@ class UpdateBet:
             new_title = updates["title"].strip()
             if new_title:
                 bet.title = new_title
+
+        if "is_freebet" in updates:
+            bet.is_freebet = updates["is_freebet"]
+
+        if "is_boosted" in updates:
+            bet.is_boosted = updates["is_boosted"]
+
+        # Validar exclusividad mutua bono/bonificacion
+        if bet.is_freebet and bet.is_boosted:
+            raise InvalidBetTypeException()
 
         bet.updated_at = datetime.now(UTC)
         self.bet_repository.save(bet)

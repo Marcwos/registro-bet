@@ -15,6 +15,8 @@ class BetModel(models.Model):
     sport_id = models.UUIDField(null=True, blank=True)
     category_id = models.UUIDField(null=True, blank=True)
     description = models.TextField(blank=True, default="")
+    is_freebet = models.BooleanField(default=False)
+    is_boosted = models.BooleanField(default=False)
     placed_at = models.DateTimeField()
     settled_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField()

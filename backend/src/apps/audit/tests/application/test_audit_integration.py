@@ -159,6 +159,8 @@ class TestDeleteBetWithAudit:
             sport_id=None,
             category_id=None,
             description="",
+            is_freebet=False,
+            is_boosted=False,
             placed_at=datetime.now(UTC),
             settled_at=None,
             created_at=datetime.now(UTC),

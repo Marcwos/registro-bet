@@ -40,9 +40,11 @@ class BalanceCalculator:
                 continue
 
             code = status.code
+            is_freebet = getattr(bet, "is_freebet", False)
 
-            # Siempre sumamos lo apostado
-            total_staked += bet.stake_amount.amount
+            # Freebet no cuenta como dinero apostado real
+            if not is_freebet:
+                total_staked += bet.stake_amount.amount
 
             if code == "won":
                 won_count += 1
@@ -54,11 +56,20 @@ class BalanceCalculator:
                 else:
                     return_amount = (bet.stake_amount.amount * bet.odds.value).quantize(Decimal("0.01"))
                 total_return += return_amount
-                total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
+
+                if is_freebet:
+                    # Freebet ganada: la casa devuelve profit_final pero NO el stake
+                    # (el bono no era dinero real), ganancia = return - stake
+                    total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
+                else:
+                    total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
             elif code == "lost":
                 lost_count += 1
-                # perdida -> profit_real = -stake
-                total_lost += bet.stake_amount.amount
+                if is_freebet:
+                    # Freebet perdida: no se resta stake (no era dinero real)
+                    pass
+                else:
+                    total_lost += bet.stake_amount.amount
             elif code == "void":
                 void_count += 1
                 # nula -> 0

@@ -41,6 +41,8 @@ def _make_bet(status_id, stake="10.00", profit_final=None):
         sport_id=None,
         category_id=None,
         description="",
+        is_freebet=False,
+        is_boosted=False,
         placed_at=now,
         settled_at=now if profit_final else None,
         created_at=now,

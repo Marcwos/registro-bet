@@ -22,6 +22,7 @@ from ...application.use_cases.create_bet import CreateBet
 from ...domain.entities.bet_status import BetStatus
 from ...domain.exceptions import (
     BetStatusNotFoundException,
+    InvalidBetTypeException,
     InvalidOddsException,
     InvalidProfitExpectedException,
     InvalidStakeAmountException,
@@ -169,6 +170,48 @@ class TestCreateBet:
                 stake_amount=Decimal("10.00"),
                 odds=Decimal("2.00"),
                 profit_expected=Decimal("-5.00"),
+            )
+
+        self.bet_repo.save.assert_not_called()
+
+    def test_create_freebet_successfully(self):
+        """Crea una apuesta freebet (bono) con is_freebet=True."""
+        bet = self.use_case.execute(
+            user_id=uuid4(),
+            stake_amount=Decimal("10.00"),
+            odds=Decimal("2.00"),
+            profit_expected=Decimal("10.00"),
+            is_freebet=True,
+        )
+
+        assert bet.is_freebet is True
+        assert bet.is_boosted is False
+        self.bet_repo.save.assert_called_once()
+
+    def test_create_boosted_bet_successfully(self):
+        """Crea una apuesta con bonificaci\u00f3n (boost)."""
+        bet = self.use_case.execute(
+            user_id=uuid4(),
+            stake_amount=Decimal("10.00"),
+            odds=Decimal("2.00"),
+            profit_expected=Decimal("25.00"),
+            is_boosted=True,
+        )
+
+        assert bet.is_boosted is True
+        assert bet.is_freebet is False
+        self.bet_repo.save.assert_called_once()
+
+    def test_create_bet_fails_with_both_freebet_and_boosted(self):
+        """Falla si se marca bono y bonificaci\u00f3n al mismo tiempo."""
+        with pytest.raises(InvalidBetTypeException):
+            self.use_case.execute(
+                user_id=uuid4(),
+                stake_amount=Decimal("10.00"),
+                odds=Decimal("2.00"),
+                profit_expected=Decimal("10.00"),
+                is_freebet=True,
+                is_boosted=True,
             )
 
         self.bet_repo.save.assert_not_called()

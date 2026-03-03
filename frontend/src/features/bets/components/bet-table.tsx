@@ -1,4 +1,4 @@
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Gift, MoreHorizontal, Pencil, Trash2, Zap } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { StatusBadge } from "./status-badge";
 import type { Bet, BetStatus } from "../types";
@@ -96,9 +96,13 @@ function useBetProfit(bet: Bet, statuses: BetStatus[]) {
   let tooltipText: string | null = null;
 
   if (statusCode === "lost") {
-    profitText = "$0.00";
-    profitClass = "text-rose-600 dark:text-rose-400";
-    tooltipText = `+$${profitExpected.toFixed(2)}`;
+    profitText = bet.is_freebet ? "$0.00" : "$0.00";
+    profitClass = bet.is_freebet
+      ? "text-slate-400 dark:text-slate-500"
+      : "text-rose-600 dark:text-rose-400";
+    tooltipText = bet.is_freebet
+      ? "Freebet — sin p\u00e9rdida real"
+      : `+$${profitExpected.toFixed(2)}`;
   } else if (statusCode === "void") {
     profitText = `$${Number(bet.stake_amount).toFixed(2)}`;
     profitClass = "text-slate-400";
@@ -183,9 +187,21 @@ function BetCard({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetCardPro
         {/* Fila superior: titulo + monto/cuota */}
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
-              {bet.title}
-            </p>
+            <div className="flex items-center gap-1.5">
+              <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
+                {bet.title}
+              </p>
+              {bet.is_freebet && (
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" title="Freebet">
+                  <Gift className="h-2.5 w-2.5" /> Bono
+                </span>
+              )}
+              {bet.is_boosted && (
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" title="Bonificaci\u00f3n">
+                  <Zap className="h-2.5 w-2.5" /> Boost
+                </span>
+              )}
+            </div>
             {bet.description && (
               <p className="mt-0.5 text-xs text-slate-400 line-clamp-1">
                 {bet.description}
@@ -249,7 +265,19 @@ function BetRow({ bet, statuses, onChangeStatus, onEdit, onDelete }: BetRowProps
     <tr className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50">
       <td className="px-4 py-3">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">{bet.title}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">{bet.title}</p>
+            {bet.is_freebet && (
+              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" title="Freebet">
+                <Gift className="h-2.5 w-2.5" /> Bono
+              </span>
+            )}
+            {bet.is_boosted && (
+              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" title="Bonificaci\u00f3n">
+                <Zap className="h-2.5 w-2.5" /> Boost
+              </span>
+            )}
+          </div>
           {bet.description && (
             <p className="mt-0.5 text-xs text-slate-400 line-clamp-1">
               {bet.description}

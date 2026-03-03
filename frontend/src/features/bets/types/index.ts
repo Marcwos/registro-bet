@@ -11,6 +11,8 @@ export interface Bet {
   sport_id: string | null;
   category_id: string | null;
   description: string;
+  is_freebet: boolean;
+  is_boosted: boolean;
   placed_at: string;
   settled_at: string | null;
   created_at: string;
@@ -27,6 +29,8 @@ export interface CreateBetRequest {
   sport_id?: string | null;
   category_id?: string | null;
   description?: string;
+  is_freebet?: boolean;
+  is_boosted?: boolean;
 }
 
 export interface UpdateBetRequest {
@@ -38,6 +42,8 @@ export interface UpdateBetRequest {
   placed_at?: string;
   description?: string;
   confirm?: boolean;
+  is_freebet?: boolean;
+  is_boosted?: boolean;
 }
 
 export interface ChangeBetStatusRequest {
