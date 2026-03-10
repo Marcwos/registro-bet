@@ -7,6 +7,8 @@ class Email:
     value: str
 
     def __post_init__(self):
+        normalized = self.value.strip().lower()
+        object.__setattr__(self, "value", normalized)
         self._validate_format(self.value)
 
     @staticmethod

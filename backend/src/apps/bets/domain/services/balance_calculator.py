@@ -57,12 +57,8 @@ class BalanceCalculator:
                     return_amount = (bet.stake_amount.amount * bet.odds.value).quantize(Decimal("0.01"))
                 total_return += return_amount
 
-                if is_freebet:
-                    # Freebet ganada: la casa devuelve profit_final pero NO el stake
-                    # (el bono no era dinero real), ganancia = return - stake
-                    total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
-                else:
-                    total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
+                # Ganancia = retorno - stake (aplica igual para freebet y normal)
+                total_won += (return_amount - bet.stake_amount.amount).quantize(Decimal("0.01"))
             elif code == "lost":
                 lost_count += 1
                 if is_freebet:
