@@ -68,3 +68,15 @@ class TestEmail:
         email = Email("test@ejemplo.com")
         with pytest.raises(AttributeError):
             email.value = "otro@email.com"
+
+    # ─── NORMALIZACIÓN ─────────────────────────────────────────
+
+    def test_email_is_normalized_to_lowercase(self):
+        """El email siempre se almacena en minúsculas."""
+        email = Email("Juan@Gmail.COM")
+        assert email.value == "juan@gmail.com"
+
+    def test_email_strips_whitespace(self):
+        """Se eliminan espacios al inicio y final."""
+        email = Email("  user@ejemplo.com  ")
+        assert email.value == "user@ejemplo.com"
